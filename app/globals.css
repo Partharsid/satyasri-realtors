@@ -1,26 +1,252 @@
 @import "tailwindcss";
 
+/* ─── Brand palette ───────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary: warm orange-red (logo) */
+  --color-primary: #e8541e;
+  --color-primary-light: #f4794a;
+  --color-primary-dark: #c43e0e;
+
+  /* Secondary: deep navy */
+  --color-secondary: #0f2d5c;
+  --color-secondary-light: #1a4480;
+  --color-secondary-dark: #081c3a;
+
+  /* Neutrals — always light mode */
+  --color-white: #ffffff;
+  --color-surface: #f8f7f4;
+  --color-border: #e5e0d8;
+  --color-text: #1a1a1a;
+  --color-text-muted: #64748b;
+
+  /* Accent green for highlights */
+  --color-accent: #2d9e6b;
+
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, #0c2248 0%, #1a4480 45%, #b83a10 100%);
+  --gradient-cta: linear-gradient(90deg, #e8541e 0%, #c43e0e 100%);
+
+  /* Shadows */
+  --shadow-card: 0 2px 16px rgba(15, 45, 92, 0.08), 0 1px 4px rgba(15, 45, 92, 0.04);
+  --shadow-hover: 0 8px 32px rgba(15, 45, 92, 0.14), 0 2px 8px rgba(15, 45, 92, 0.06);
+  --shadow-cta: 0 4px 20px rgba(232, 84, 30, 0.4);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Always light — no auto dark mode ───────────────── */
+/* Dark mode intentionally disabled for this business site */
+
+/* ─── Base ────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Focus visible (accessibility) ──────────────────── */
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Gradient utilities ──────────────────────────────── */
+.gradient-hero {
+  background: var(--gradient-hero);
+}
+
+.gradient-cta {
+  background: var(--gradient-cta);
+}
+
+/* ─── Card ────────────────────────────────────────────── */
+.card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
+}
+
+/* ─── Buttons ─────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  background: var(--gradient-cta);
+  color: #ffffff;
+  box-shadow: var(--shadow-cta);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(232, 84, 30, 0.5);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  background: transparent;
+  color: var(--color-secondary);
+  border: 2px solid var(--color-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  background: var(--color-secondary);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-outline-white {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  text-decoration: none;
+  backdrop-filter: blur(4px);
+}
+
+.btn-outline-white:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+}
+
+/* ─── Section spacing ─────────────────────────────────── */
+.section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
+
+.container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* ─── Loading skeleton ────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #e8e4de 25%, #f5f3ef 50%, #e8e4de 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s infinite;
+  border-radius: 8px;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─── Price badge ─────────────────────────────────────── */
+.price-badge {
+  background: var(--gradient-cta);
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+  display: inline-block;
+}
+
+/* ─── Tag ─────────────────────────────────────────────── */
+.tag {
+  background: rgba(15, 45, 92, 0.07);
+  color: var(--color-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
+
+/* ─── Section label ───────────────────────────────────── */
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: block;
+}
+
+/* ─── Bg surface ──────────────────────────────────────── */
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+/* ─── Text helpers ────────────────────────────────────── */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-muted { color: var(--color-text-muted); }
