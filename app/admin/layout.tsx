@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
+import AdminTopbar from "./AdminTopbar";
 
 export const metadata: Metadata = {
   title: "Admin Panel | Satyasri Realtors",
@@ -6,18 +9,15 @@ export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
+
   return (
     <div className="min-h-screen bg-[#f8f7f4] pt-20">
-      <div className="bg-[#0f2d5c] text-white py-4 px-6 shadow-md fixed w-full top-0 z-50">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="font-bold text-xl font-[var(--font-poppins)]">
-            Satyasri <span className="text-[#C9A227]">Admin Panel</span>
-          </h1>
-          <button className="text-sm font-medium hover:text-[#C9A227] transition-colors">Logout</button>
-        </div>
-      </div>
-      <div className="container mx-auto py-8">
+      <AdminTopbar userEmail={user?.email} />
+      <div className="container mx-auto py-8 px-4 sm:px-6">
         {children}
       </div>
     </div>

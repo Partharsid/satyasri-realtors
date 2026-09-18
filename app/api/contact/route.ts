@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+import { createClient } from "@supabase/supabase-js";
+
 // ── Rate limiting (simple in-memory store — resets on cold start) ─────────────
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 5;       // max submissions
@@ -124,6 +126,51 @@ async function sendTelegram(data: z.infer<typeof schema>): Promise<void> {
   }
 }
 
+/** Save lead to Supabase Database (Phase 2 Admin Panel) */
+async function sendToSupabase(data: z.infer<typeof schema>): Promise<void> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // Use service role key to bypass RLS, fallback to anon key if not available
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Supabase credentials not configured");
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // Extract budget/requirement from message if they were encoded there
+  // The new LeadForm sends them bundled in message: "Requirement: ...\nBudget: ...\nLocation: ..."
+  // But just in case, we'll try to extract them
+  let requirement = data.message;
+  let budget = "";
+  let location = data.property;
+
+  const reqMatch = data.message.match(/Requirement: (.*?)\n/);
+  const budgetMatch = data.message.match(/Budget: (.*?)\n/);
+  const locMatch = data.message.match(/Location: (.*)/);
+
+  if (reqMatch) requirement = reqMatch[1];
+  if (budgetMatch) budget = budgetMatch[1];
+  if (locMatch && !location) location = locMatch[1];
+
+  const { error } = await supabase.from('leads').insert([
+    {
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      budget: budget,
+      location: location,
+      requirement: requirement,
+      source_page: data.sourcePage,
+      status: 'new'
+    }
+  ]);
+
+  if (error) {
+    throw new Error(`Supabase error: ${error.message}`);
+  }
+}
+
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   // Get client IP for rate limiting
@@ -163,11 +210,12 @@ export async function POST(req: NextRequest) {
 
   const data = parsed.data;
 
-  // Fire all three channels in parallel; one failing must not block the others
-  const [sheetsResult, emailResult, telegramResult] = await Promise.allSettled([
+  // Fire all four channels in parallel; one failing must not block the others
+  const [sheetsResult, emailResult, telegramResult, supabaseResult] = await Promise.allSettled([
     process.env.GOOGLE_SHEET_ID ? sendToGoogleSheets(data) : Promise.reject(new Error("GOOGLE_SHEET_ID not set")),
     process.env.RESEND_API_KEY ? sendEmail(data) : Promise.reject(new Error("RESEND_API_KEY not set")),
     process.env.TELEGRAM_BOT_TOKEN ? sendTelegram(data) : Promise.reject(new Error("TELEGRAM_BOT_TOKEN not set")),
+    process.env.NEXT_PUBLIC_SUPABASE_URL ? sendToSupabase(data) : Promise.reject(new Error("Supabase not configured")),
   ]);
 
   // Log any channel failures server-side
@@ -177,9 +225,11 @@ export async function POST(req: NextRequest) {
     console.error("[Lead] Email failed:", emailResult.reason);
   if (telegramResult.status === "rejected")
     console.error("[Lead] Telegram failed:", telegramResult.reason);
+  if (supabaseResult.status === "rejected")
+    console.error("[Lead] Supabase failed:", supabaseResult.reason);
 
   // At least one channel succeeded → show success to user
-  const anySucceeded = [sheetsResult, emailResult, telegramResult].some(
+  const anySucceeded = [sheetsResult, emailResult, telegramResult, supabaseResult].some(
     (r) => r.status === "fulfilled"
   );
 
