@@ -13,9 +13,10 @@ const schema = z.object({
     .min(10, "Enter a valid phone number")
     .max(15)
     .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
-  email: z.string().email("Enter a valid email address"),
-  property: z.string().optional(),
-  message: z.string().min(5, "Message too short").max(1000),
+  email: z.string().email("Enter a valid email address").optional().or(z.literal('')),
+  budget: z.string().min(1, "Please enter your budget").max(100),
+  location: z.string().min(2, "Please enter preferred location").max(100),
+  requirement: z.string().min(5, "Please describe your requirement").max(1000),
   // Honeypot — must remain empty; bots fill it, humans don't
   _hp: z.string().max(0, ""),
 });
@@ -37,16 +38,28 @@ export default function LeadForm({ prefilledProperty, sourcePage }: LeadFormProp
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { property: prefilledProperty ?? "" },
+    defaultValues: { requirement: prefilledProperty ?? "" },
   });
 
   const onSubmit = async (data: FormData) => {
     setStatus("loading");
     try {
+      // Map new fields to the existing format expected by the API
+      // Since API might expect "message" and "property", we combine the new fields into message
+      const apiPayload = {
+        name: data.name,
+        phone: data.phone,
+        email: data.email || "not-provided@example.com",
+        property: data.location,
+        message: `Requirement: ${data.requirement}\nBudget: ${data.budget}\nLocation: ${data.location}`,
+        _hp: data._hp,
+        sourcePage
+      };
+
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, sourcePage }),
+        body: JSON.stringify(apiPayload),
       });
       const json = await res.json();
       if (res.ok && json.ok) {
@@ -62,10 +75,10 @@ export default function LeadForm({ prefilledProperty, sourcePage }: LeadFormProp
 
   if (status === "success") {
     return (
-      <div className="card p-8 text-center">
-        <CheckCircle size={52} className="mx-auto mb-4 text-green-500" />
-        <h3 className="text-xl font-bold font-[var(--font-poppins)] mb-2">Thank you!</h3>
-        <p className="text-[var(--color-text-muted)] mb-6">
+      <div className="card p-8 text-center bg-white shadow-lg">
+        <CheckCircle size={52} className="mx-auto mb-4 text-[#2d9e6b]" />
+        <h3 className="text-xl font-bold font-[var(--font-poppins)] mb-2 text-[#0f2d5c]">Thank you!</h3>
+        <p className="text-[#64748b] mb-6">
           We&apos;ve received your enquiry. {BUSINESS.contact.consultant} will get back to you shortly.
         </p>
         <button onClick={() => setStatus("idle")} className="btn-secondary">
@@ -97,7 +110,7 @@ export default function LeadForm({ prefilledProperty, sourcePage }: LeadFormProp
                 {BUSINESS.contact.phoneDisplay}
               </a>{" "}
               or message us on{" "}
-              <a href={BUSINESS.contact.whatsapp} className="font-semibold underline text-green-700">
+              <a href={BUSINESS.contact.whatsapp} className="font-semibold underline text-[#2d9e6b]">
                 WhatsApp
               </a>
               .
@@ -108,32 +121,32 @@ export default function LeadForm({ prefilledProperty, sourcePage }: LeadFormProp
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1.5" htmlFor="name">
-            Full Name <span className="text-[var(--color-primary)]">*</span>
+          <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]" htmlFor="name">
+            Full Name <span className="text-[#C9A227]">*</span>
           </label>
           <input
             id="name"
             type="text"
             autoComplete="name"
             placeholder="Ramesh Kumar"
-            className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[var(--color-primary)] ${
-              errors.name ? "border-red-400" : "border-[var(--color-border)]"
+            className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[#C9A227] ${
+              errors.name ? "border-red-400" : "border-[#e5e0d8]"
             }`}
             {...register("name")}
           />
           {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5" htmlFor="phone">
-            Phone <span className="text-[var(--color-primary)]">*</span>
+          <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]" htmlFor="phone">
+            Mobile Number <span className="text-[#C9A227]">*</span>
           </label>
           <input
             id="phone"
             type="tel"
             autoComplete="tel"
             placeholder="9876543210"
-            className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[var(--color-primary)] ${
-              errors.phone ? "border-red-400" : "border-[var(--color-border)]"
+            className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[#C9A227] ${
+              errors.phone ? "border-red-400" : "border-[#e5e0d8]"
             }`}
             {...register("phone")}
           />
@@ -141,17 +154,50 @@ export default function LeadForm({ prefilledProperty, sourcePage }: LeadFormProp
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]" htmlFor="budget">
+            Budget <span className="text-[#C9A227]">*</span>
+          </label>
+          <input
+            id="budget"
+            type="text"
+            placeholder="e.g., ₹2-3 Cr"
+            className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[#C9A227] ${
+              errors.budget ? "border-red-400" : "border-[#e5e0d8]"
+            }`}
+            {...register("budget")}
+          />
+          {errors.budget && <p className="text-xs text-red-500 mt-1">{errors.budget.message}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]" htmlFor="location">
+            Preferred Location <span className="text-[#C9A227]">*</span>
+          </label>
+          <input
+            id="location"
+            type="text"
+            placeholder="e.g., Kondapur, Gachibowli"
+            className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[#C9A227] ${
+              errors.location ? "border-red-400" : "border-[#e5e0d8]"
+            }`}
+            {...register("location")}
+          />
+          {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location.message}</p>}
+        </div>
+      </div>
+
       <div>
-        <label className="block text-sm font-medium mb-1.5" htmlFor="email">
-          Email <span className="text-[var(--color-primary)]">*</span>
+        <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]" htmlFor="email">
+          Email <span className="text-[#64748b] font-normal">(Optional)</span>
         </label>
         <input
           id="email"
           type="email"
           autoComplete="email"
           placeholder="you@example.com"
-          className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[var(--color-primary)] ${
-            errors.email ? "border-red-400" : "border-[var(--color-border)]"
+          className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[#C9A227] ${
+            errors.email ? "border-red-400" : "border-[#e5e0d8]"
           }`}
           {...register("email")}
         />
@@ -159,32 +205,19 @@ export default function LeadForm({ prefilledProperty, sourcePage }: LeadFormProp
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1.5" htmlFor="property">
-          Property of Interest
-        </label>
-        <input
-          id="property"
-          type="text"
-          placeholder="e.g. 3 BHK in Kondapur"
-          className="w-full px-4 py-3 rounded-xl border border-[var(--color-border)] text-sm outline-none transition-colors bg-white focus:border-[var(--color-primary)]"
-          {...register("property")}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1.5" htmlFor="message">
-          Message <span className="text-[var(--color-primary)]">*</span>
+        <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]" htmlFor="requirement">
+          Detailed Requirement <span className="text-[#C9A227]">*</span>
         </label>
         <textarea
-          id="message"
-          rows={4}
-          placeholder="Tell us what you're looking for..."
-          className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[var(--color-primary)] resize-none ${
-            errors.message ? "border-red-400" : "border-[var(--color-border)]"
+          id="requirement"
+          rows={3}
+          placeholder="Tell us what you're looking for (e.g. 3BHK, East facing, possession by 2026)..."
+          className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-colors bg-white focus:border-[#C9A227] resize-none ${
+            errors.requirement ? "border-red-400" : "border-[#e5e0d8]"
           }`}
-          {...register("message")}
+          {...register("requirement")}
         />
-        {errors.message && <p className="text-xs text-red-500 mt-1">{errors.message.message}</p>}
+        {errors.requirement && <p className="text-xs text-red-500 mt-1">{errors.requirement.message}</p>}
       </div>
 
       <button
@@ -204,9 +237,9 @@ export default function LeadForm({ prefilledProperty, sourcePage }: LeadFormProp
         )}
       </button>
 
-      <p className="text-xs text-[var(--color-text-muted)] text-center">
+      <p className="text-xs text-[#64748b] text-center">
         Or reach us instantly on{" "}
-        <a href={BUSINESS.contact.whatsapp} className="text-green-600 font-semibold hover:underline">
+        <a href={BUSINESS.contact.whatsapp} target="_blank" rel="noopener noreferrer" className="text-[#2d9e6b] font-semibold hover:underline">
           WhatsApp
         </a>
       </p>

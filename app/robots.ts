@@ -1,9 +1,13 @@
-import { MetadataRoute } from "next";
+import { MetadataRoute } from 'next';
+import { BUSINESS } from '@/data/business';
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.satyasri.com";
   return {
-    rules: { userAgent: "*", allow: "/", disallow: ["/api/"] },
-    sitemap: `${siteUrl}/sitemap.xml`,
+    rules: {
+      userAgent: '*',
+      allow: '/',
+      disallow: '/admin/',
+    },
+    sitemap: `https://${BUSINESS.contact.website}/sitemap.xml`,
   };
 }

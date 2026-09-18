@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getListingBySlug } from "@/data/listings";
 import listings from "@/data/listings";
 import LeadForm from "@/components/LeadForm";
+import ListingActions from "@/components/ListingActions";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -232,6 +233,8 @@ export default async function ListingDetailPage({ params }: Props) {
                   prefilledProperty={listing.title}
                   sourcePage={`Listing: ${listing.slug}`}
                 />
+
+                <ListingActions listing={listing} />
               </div>
             </div>
           </div>

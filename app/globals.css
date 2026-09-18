@@ -2,10 +2,10 @@
 
 /* ─── Brand palette ───────────────────────────────────── */
 :root {
-  /* Primary: warm orange-red (logo) */
-  --color-primary: #e8541e;
-  --color-primary-light: #f4794a;
-  --color-primary-dark: #c43e0e;
+  /* Primary: elegant gold */
+  --color-primary: #C9A227;
+  --color-primary-light: #D4AF37;
+  --color-primary-dark: #A67C00;
 
   /* Secondary: deep navy */
   --color-secondary: #0f2d5c;
@@ -23,13 +23,13 @@
   --color-accent: #2d9e6b;
 
   /* Gradients */
-  --gradient-hero: linear-gradient(135deg, #0c2248 0%, #1a4480 45%, #b83a10 100%);
-  --gradient-cta: linear-gradient(90deg, #e8541e 0%, #c43e0e 100%);
+  --gradient-hero: linear-gradient(135deg, #081c3a 0%, #0f2d5c 50%, #1a4480 100%);
+  --gradient-cta: linear-gradient(90deg, #C9A227 0%, #A67C00 100%);
 
   /* Shadows */
   --shadow-card: 0 2px 16px rgba(15, 45, 92, 0.08), 0 1px 4px rgba(15, 45, 92, 0.04);
   --shadow-hover: 0 8px 32px rgba(15, 45, 92, 0.14), 0 2px 8px rgba(15, 45, 92, 0.06);
-  --shadow-cta: 0 4px 20px rgba(232, 84, 30, 0.4);
+  --shadow-cta: 0 4px 20px rgba(201, 162, 39, 0.4);
 }
 
 /* ─── Always light — no auto dark mode ───────────────── */
@@ -110,7 +110,7 @@ body {
 .btn-primary:hover {
   opacity: 0.92;
   transform: translateY(-1px);
-  box-shadow: 0 6px 28px rgba(232, 84, 30, 0.5);
+  box-shadow: 0 6px 28px rgba(201, 162, 39, 0.5);
 }
 
 .btn-primary:active {

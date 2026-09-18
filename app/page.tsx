@@ -5,7 +5,7 @@ import {
   ShieldCheck,
   Handshake,
   TrendingUp,
-  Search,
+
   Phone,
   Star,
   Building2,
@@ -32,14 +32,21 @@ export default function HomePage() {
   return (
     <>
       {/* ── HERO ── */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden gradient-hero">
-        {/* Soft radial accent — orange warmth on right */}
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-[#081c3a]">
+        {/* Full-bleed background image with dark overlay */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000')" }}
+        />
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#081c3a] via-[#081c3a]/80 to-transparent" />
+
+        {/* Soft radial accent — gold warmth on right */}
+        <div
+          className="absolute inset-0 pointer-events-none z-0"
           aria-hidden
           style={{
             background:
-              "radial-gradient(ellipse 70% 65% at 80% 55%, rgba(232,84,30,0.28) 0%, transparent 70%)",
+              "radial-gradient(ellipse 70% 65% at 80% 55%, rgba(201,162,39,0.15) 0%, transparent 70%)",
           }}
         />
 
@@ -54,17 +61,16 @@ export default function HomePage() {
                 animate="show"
                 custom={0}
               >
-                Your Trusted<br />Real Estate Partner
+                Buy • Sell • Rent Properties<br />in Hyderabad
               </motion.h1>
               <motion.p
-                className="text-white/80 text-lg mb-8 max-w-lg leading-relaxed"
+                className="text-white/80 text-lg mb-8 max-w-lg leading-relaxed font-medium"
                 variants={fadeUp}
                 initial="hidden"
                 animate="show"
                 custom={1}
               >
-                Buying · Selling · Renting · Investing — with transparency
-                and trust at every step. Serving Hyderabad and Andhra Pradesh.
+                Trusted Since 2009. Genuine property listings, transparent transactions, and personalized service across Telangana and Andhra Pradesh.
               </motion.p>
               <motion.div
                 className="flex flex-wrap gap-3 mb-10"
@@ -73,11 +79,11 @@ export default function HomePage() {
                 animate="show"
                 custom={2}
               >
-                <Link href="/listings" className="btn-primary">
-                  <Search size={16} /> Explore Listings
-                </Link>
-                <a href={`tel:${BUSINESS.contact.phone}`} className="btn-outline-white">
+                <a href={`tel:${BUSINESS.contact.phone}`} className="btn-primary">
                   <Phone size={16} /> Call Now
+                </a>
+                <a href={BUSINESS.contact.whatsapp} target="_blank" rel="noopener noreferrer" className="btn-outline-white border-[#C9A227] text-[#C9A227] hover:bg-[#C9A227] hover:text-white">
+                  WhatsApp Us
                 </a>
               </motion.div>
 
@@ -103,7 +109,7 @@ export default function HomePage() {
                       backdropFilter: "blur(8px)",
                     }}
                   >
-                    <Icon size={14} className="text-orange-300" />
+                    <Icon size={14} className="text-[#C9A227]" />
                     {label}
                   </div>
                 ))}
@@ -208,7 +214,7 @@ export default function HomePage() {
                 icon: Handshake,
                 title: "Transparent Dealings",
                 body: "All terms are laid out clearly upfront. You understand every detail before signing anything — that is our commitment.",
-                color: "#e8541e",
+                color: "#C9A227",
               },
               {
                 icon: TrendingUp,
@@ -287,7 +293,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS PLACEHOLDER ── */}
+      {/* ── TESTIMONIALS ── */}
       <section className="section" style={{ background: "#ffffff" }}>
         <div className="container">
           <motion.div
@@ -302,43 +308,68 @@ export default function HomePage() {
               What Our Clients Say
             </h2>
           </motion.div>
-          {/* TODO: Client to supply testimonials */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="card p-6">
+          <div className="max-w-2xl">
+            <div className="card p-8 flex flex-col sm:flex-row items-center gap-6 bg-[#f8f7f4]">
+              <div className="flex-1">
                 <div className="flex gap-1 mb-3">
                   {[...Array(5)].map((_, s) => (
-                    <Star key={s} size={14} className="fill-yellow-400 text-yellow-400" />
+                    <Star key={s} size={20} className="fill-[#C9A227] text-[#C9A227]" />
                   ))}
                 </div>
-                <div className="skeleton h-4 w-full mb-2 rounded" />
-                <div className="skeleton h-4 w-4/5 mb-2 rounded" />
-                <div className="skeleton h-4 w-3/5 mb-5 rounded" />
-                <div className="flex items-center gap-3">
-                  <div className="skeleton w-10 h-10 rounded-full" />
-                  <div>
-                    <div className="skeleton h-3 w-24 mb-1.5 rounded" />
-                    <div className="skeleton h-3 w-16 rounded" />
-                  </div>
-                </div>
-                <p className="text-xs mt-3 italic" style={{ color: "var(--color-text-muted)" }}>
-                  {/* TODO: Add real testimonial content from client */}
-                  Client testimonial to be added by Satyasri Realtors.
+                <h3 className="text-xl font-bold mb-2 text-[#0f2d5c]">See our reviews on Google</h3>
+                <p className="text-muted mb-4">
+                  We take pride in our transparent dealings and trusted service. Read what our clients have to say about their experience with Satyasri Realtors on Google.
                 </p>
+                <a href={BUSINESS.contact.googleMaps} target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
+                  Read Reviews on Google <ArrowRight size={16} />
+                </a>
               </div>
-            ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── INSTAGRAM FEED ── */}
+      <section className="section bg-surface">
+        <div className="container">
+          <motion.div
+            className="mb-10 flex justify-between items-end flex-wrap gap-4"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-poppins)]"
+                style={{ color: "var(--color-secondary)" }}>
+                Follow Us on Instagram
+              </h2>
+              <p className="text-muted mt-2">@satyasrirealtors</p>
+            </div>
+            <a href={BUSINESS.contact.instagram} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              View Profile
+            </a>
+          </motion.div>
+          <div className="card p-8 text-center border-dashed border-2 border-[#e5e0d8] bg-transparent">
+            {/* TODO(instagram-embed): Client needs to provide an embeddable Instagram widget code (like Elfsight or LightWidget) to show live feed here. */}
+            <p className="text-[#64748b] mb-4">Instagram feed placeholder.</p>
+            <p className="text-sm text-[#64748b]">To display live posts here, configure an Instagram embed widget and drop the code in this section.</p>
           </div>
         </div>
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="py-20 gradient-hero relative overflow-hidden">
+      <section className="py-20 bg-[#081c3a] relative overflow-hidden">
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 z-0 opacity-20 bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000')" }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none z-0"
           aria-hidden
           style={{
             background:
-              "radial-gradient(ellipse 60% 80% at 20% 50%, rgba(232,84,30,0.22) 0%, transparent 70%)",
+              "radial-gradient(ellipse 60% 80% at 20% 50%, rgba(201,162,39,0.15) 0%, transparent 70%)",
           }}
         />
         <div className="container relative z-10">

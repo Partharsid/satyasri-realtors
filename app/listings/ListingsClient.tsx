@@ -16,6 +16,7 @@ const fadeUp = {
 type TypeFilter = ListingType | "All";
 type TxFilter = TransactionType | "All";
 type CityFilter = string | "All";
+type BudgetFilter = "All" | "Under 1 Cr" | "1 - 3 Cr" | "3 - 5 Cr" | "Above 5 Cr";
 
 interface Props {
   listings: Listing[];
@@ -27,11 +28,35 @@ export default function ListingsClient({ listings }: Props) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("All");
   const [txFilter, setTxFilter] = useState<TxFilter>("All");
   const [cityFilter, setCityFilter] = useState<CityFilter>("All");
+  const [budgetFilter, setBudgetFilter] = useState<BudgetFilter>("All");
+
+  const parsePrice = (priceStr: string) => {
+    // Basic heuristic to parse "26.00 Lakhs per Acre", "52,000/month", "2.5 Cr"
+    const lower = priceStr.toLowerCase();
+    if (lower.includes("lakh")) {
+      const match = lower.match(/[\d.]+/);
+      return match ? parseFloat(match[0]) * 100000 : 0;
+    }
+    if (lower.includes("cr")) {
+      const match = lower.match(/[\d.]+/);
+      return match ? parseFloat(match[0]) * 10000000 : 0;
+    }
+    const match = lower.replace(/,/g, "").match(/[\d.]+/);
+    return match ? parseFloat(match[0]) : 0;
+  };
 
   const filtered = listings.filter((l) => {
     if (typeFilter !== "All" && l.type !== typeFilter) return false;
     if (txFilter !== "All" && l.transaction !== txFilter) return false;
     if (cityFilter !== "All" && l.location.city !== cityFilter) return false;
+
+    if (budgetFilter !== "All") {
+      const val = parsePrice(l.price);
+      if (budgetFilter === "Under 1 Cr" && val >= 10000000) return false;
+      if (budgetFilter === "1 - 3 Cr" && (val < 10000000 || val > 30000000)) return false;
+      if (budgetFilter === "3 - 5 Cr" && (val < 30000000 || val > 50000000)) return false;
+      if (budgetFilter === "Above 5 Cr" && val <= 50000000) return false;
+    }
     return true;
   });
 
@@ -96,6 +121,13 @@ export default function ListingsClient({ listings }: Props) {
                 <FilterChip key={c} label={c} active={cityFilter === c} onClick={() => setCityFilter(c)} />
               ))}
             </div>
+            <div className="w-px bg-[var(--color-border)] mx-1 hidden sm:block" />
+            {/* Budget */}
+            <div className="flex flex-wrap gap-2">
+              {(["All", "Under 1 Cr", "1 - 3 Cr", "3 - 5 Cr", "Above 5 Cr"] as BudgetFilter[]).map((b) => (
+                <FilterChip key={b} label={b === "All" ? "Any Budget" : b} active={budgetFilter === b} onClick={() => setBudgetFilter(b)} />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -104,7 +136,7 @@ export default function ListingsClient({ listings }: Props) {
           <div className="text-center py-20 text-[var(--color-text-muted)]">
             <p className="text-lg font-medium mb-2">No properties match your filters.</p>
             <button
-              onClick={() => { setTypeFilter("All"); setTxFilter("All"); setCityFilter("All"); }}
+              onClick={() => { setTypeFilter("All"); setTxFilter("All"); setCityFilter("All"); setBudgetFilter("All"); }}
               className="btn-secondary mt-2"
             >
               Clear Filters

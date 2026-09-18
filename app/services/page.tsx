@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Building2, TrendingUp, Home, Star, ArrowRight, CheckCircle } from "lucide-react";
+import { Building2, TrendingUp, Home, Star, ArrowRight, CheckCircle, Briefcase } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Our Services",
+  title: "Our Services | Satyasri Realtors",
   description:
-    "Satyasri Realtors offers expert property buying, selling, renting and investment consulting across Hyderabad and Andhra Pradesh.",
+    "Satyasri Realtors offers expert property buying, selling, rental, leasing, and investment consulting across Hyderabad.",
 };
 
 const services = [
@@ -37,20 +37,20 @@ const services = [
       "Negotiation on your behalf",
       "End-to-end transaction support",
     ],
-    color: "#e8541e",
+    color: "#C9A227",
     cta: "List Your Property",
     href: "/contact?subject=Sell",
   },
   {
     icon: Home,
-    title: "Renting",
-    tagline: "Premium rentals across Hyderabad's top locations.",
+    title: "Property Rental",
+    tagline: "Premium residential rentals across prime locations.",
     description:
       "Whether you're a tenant looking for the right home or an owner wanting reliable tenants, we handle the search, matching, background checks, and lease formalities efficiently and professionally.",
     points: [
       "Verified rental listings in prime locations",
       "Tenant screening and matching",
-      "Lease agreement support",
+      "Rental agreement support",
       "Owner & tenant mediation",
     ],
     color: "#2d9e6b",
@@ -58,14 +58,30 @@ const services = [
     href: "/listings?transaction=Rent",
   },
   {
+    icon: Briefcase,
+    title: "Leasing",
+    tagline: "Commercial spaces for your business growth.",
+    description:
+      "We help businesses secure the ideal commercial space — offices, retail outlets, or warehouses. We negotiate favorable lease terms and manage the documentation process so you can focus on your business.",
+    points: [
+      "Commercial property sourcing",
+      "Lease term negotiation",
+      "Documentation and compliance",
+      "Strategic location advisory",
+    ],
+    color: "#081c3a",
+    cta: "Find Commercial Space",
+    href: "/listings?transaction=Lease",
+  },
+  {
     icon: Star,
-    title: "Investment Consulting",
+    title: "Investment Consultation",
     tagline: "Turn the right land or property into long-term returns.",
     description:
-      "We advise on high-potential investment properties — land parcels near infrastructure corridors, upcoming residential hotspots, and commercial real estate — backed by local market intelligence you won't find on a portal.",
+      "We advise on high-potential investment properties — land parcels near infrastructure corridors, upcoming residential hotspots, and commercial real estate — backed by local market intelligence.",
     points: [
       "Market intelligence and trend analysis",
-      "Investment-grade land parcels",
+      "Investment-grade property sourcing",
       "ROI projections and risk assessment",
       "Long-term portfolio planning",
     ],
@@ -86,8 +102,8 @@ export default function ServicesPage() {
             Our Services
           </h1>
           <p className="text-[var(--color-text-muted)] mt-3 max-w-xl mx-auto">
-            End-to-end real estate services across Hyderabad and Andhra Pradesh —
-            tailored to buyers, sellers, tenants, and investors alike.
+            End-to-end real estate services across Hyderabad —
+            tailored to buyers, sellers, tenants, businesses, and investors.
           </p>
         </div>
 
@@ -108,15 +124,15 @@ export default function ServicesPage() {
                 <h2 className="text-2xl font-bold font-[var(--font-poppins)] text-[var(--color-secondary)] mb-1">
                   {title}
                 </h2>
-                <p className="font-medium text-[var(--color-primary)] mb-4">{tagline}</p>
+                <p className="font-medium mb-4" style={{ color }}>{tagline}</p>
                 <p className="text-[var(--color-text-muted)] leading-relaxed mb-6">{description}</p>
                 <Link href={href} className="btn-primary !inline-flex">
                   {cta} <ArrowRight size={15} />
                 </Link>
               </div>
               <div
-                className="rounded-2xl p-6"
-                style={{ background: `${color}08`, border: `1px solid ${color}20` }}
+                className="rounded-2xl p-6 bg-white"
+                style={{ border: `1px solid ${color}30`, boxShadow: `0 4px 20px ${color}10` }}
               >
                 <p className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color }}>
                   What&apos;s included

@@ -86,6 +86,10 @@ const jsonLd = {
   url: siteUrl,
   telephone: BUSINESS.contact.phone,
   email: BUSINESS.contact.email,
+  founder: {
+    "@type": "Person",
+    name: BUSINESS.contact.consultant
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: `${BUSINESS.address.line1} ${BUSINESS.address.line2}`,

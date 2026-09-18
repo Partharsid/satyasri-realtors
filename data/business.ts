@@ -10,6 +10,7 @@ export const BUSINESS = {
   services: ["Buy", "Sell", "Rent", "Invest"],
   trustBadges: ["Trusted Service", "Transparent Dealings", "Best Value"],
   contact: {
+    // TODO(confirm-phone): Client brief mentions 9014202020. Confirm which to use.
     phone: "9014224408",
     phoneDisplay: "+91 90142 24408",
     email: "mahesh@satyasri.com",
@@ -17,19 +18,17 @@ export const BUSINESS = {
     whatsapp: "https://wa.me/919014224408",
     facebook: "https://www.facebook.com/SatyasriRealtors/",
     instagram: "https://www.instagram.com/satyasrirealtors",
-    // TODO: Verify this Google Maps link destination with the client
-    googleMaps: "https://share.google/kObWcG3sxgp4qUhuI",
-    consultant: "Mahesh Kumar",
+    // TODO(add-gbp-place-link): Client needs to share exact Google Maps place link
+    googleMaps: "https://www.google.com/maps/search/?api=1&query=House+No.+1-57/384,+A+Block,+Kondapur,+Sri+Ram+Nagar,+Serilingampalle,+Hyderabad,+Telangana+500084",
+    consultant: "Mahesh Kumar Aerwa",
   },
   address: {
-    line1: "Aditya Heights, Near Hi-Tech City,",
-    line2: "Opp. Botanical Gardens, White Fields, Kondapur,",
+    line1: "House No. 1-57/384, A Block,",
+    line2: "Kondapur, Sri Ram Nagar, Serilingampalle (Mandal),",
     city: "Hyderabad",
     state: "Telangana",
     pin: "500084",
     country: "India",
-    // NOTE: Confirm with client if this is the registered office address
-    // or if it is only the Kondapur property listing address.
-    full: "Aditya Heights, Near Hi-Tech City, Opp. Botanical Gardens, White Fields, Kondapur, Hyderabad – 500084, Telangana, India",
+    full: "House No. 1-57/384, A Block, Kondapur, Sri Ram Nagar, Serilingampalle (Mandal), Hyderabad, Telangana 500084",
   },
 } as const;
