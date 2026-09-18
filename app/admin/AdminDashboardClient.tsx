@@ -4,11 +4,14 @@ import { useState } from "react";
 import { Plus, Edit, Trash2, Image as ImageIcon, Users, Home } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import PropertyModal from "@/components/PropertyModal";
 
 export default function AdminDashboardClient({ initialListings, initialLeads }: { initialListings: any[], initialLeads: any[] }) {
   const [activeTab, setActiveTab] = useState<"properties" | "leads">("properties");
   const [listings, setListings] = useState(initialListings);
   const [leads, setLeads] = useState(initialLeads);
+  const [editingListing, setEditingListing] = useState<any | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const supabase = createClient();
   const router = useRouter();
 
@@ -17,6 +20,24 @@ export default function AdminDashboardClient({ initialListings, initialLeads }: 
 
     await supabase.from("listings").delete().eq("id", id);
     setListings(listings.filter((l) => l.id !== id));
+  };
+
+  const handleSaveListing = async () => {
+    // Refresh listings from DB
+    const { data } = await supabase.from("listings").select("*").order("created_at", { ascending: false });
+    if (data) setListings(data);
+    setShowModal(false);
+    setEditingListing(null);
+  };
+
+  const openAddModal = () => {
+    setEditingListing(null);
+    setShowModal(true);
+  };
+
+  const openEditModal = (listing: any) => {
+    setEditingListing(listing);
+    setShowModal(true);
   };
 
   return (
@@ -55,7 +76,7 @@ export default function AdminDashboardClient({ initialListings, initialLeads }: 
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-[#0f2d5c]">Property Listings</h2>
-              <button className="btn-primary !py-2 !px-4 text-sm flex items-center gap-2">
+              <button onClick={openAddModal} className="btn-primary !py-2 !px-4 text-sm flex items-center gap-2">
                 <Plus size={16} /> Add New Property
               </button>
             </div>
@@ -87,7 +108,11 @@ export default function AdminDashboardClient({ initialListings, initialLeads }: 
                           <button className="p-1.5 hover:text-[#C9A227] hover:bg-[#C9A227]/10 rounded-md transition-colors" title="Edit Images">
                             <ImageIcon size={16} />
                           </button>
-                          <button className="p-1.5 hover:text-[#0f2d5c] hover:bg-[#0f2d5c]/10 rounded-md transition-colors" title="Edit Details">
+                          <button
+                            className="p-1.5 hover:text-[#0f2d5c] hover:bg-[#0f2d5c]/10 rounded-md transition-colors"
+                            title="Edit Details"
+                            onClick={() => openEditModal(listing)}
+                          >
                             <Edit size={16} />
                           </button>
                           <button
@@ -168,6 +193,18 @@ export default function AdminDashboardClient({ initialListings, initialLeads }: 
           </div>
         )}
       </div>
+
+      {/* MODAL */}
+      {showModal && (
+        <PropertyModal
+          listing={editingListing}
+          onClose={() => {
+            setShowModal(false);
+            setEditingListing(null);
+          }}
+          onSave={handleSaveListing}
+        />
+      )}
     </div>
   );
 }

@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { MapPin, Ruler, Bed, Bath, Home, CheckCircle, ArrowLeft, Car, Users } from "lucide-react";
 import Link from "next/link";
-import { getListingBySlug } from "@/data/listings";
-import listings from "@/data/listings";
+import { createClient } from "@/utils/supabase/server";
 import LeadForm from "@/components/LeadForm";
 import ListingActions from "@/components/ListingActions";
 
@@ -12,29 +11,55 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return listings.map((l) => ({ slug: l.slug }));
-}
+export const revalidate = 60; // Revalidate every minute
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
-  if (!listing) return {};
+  const supabase = await createClient();
+  const { data: dbListing } = await supabase.from("listings").select("*").eq("slug", slug).single();
+
+  if (!dbListing) return {};
+
   return {
-    title: listing.title,
-    description: listing.summary,
+    title: dbListing.title,
+    description: dbListing.summary,
     openGraph: {
-      title: listing.title,
-      description: listing.summary,
-      images: [{ url: listing.thumbnail, alt: listing.title }],
+      title: dbListing.title,
+      description: dbListing.summary,
+      images: [{ url: dbListing.thumbnail, alt: dbListing.title }],
     },
   };
 }
 
 export default async function ListingDetailPage({ params }: Props) {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
-  if (!listing) notFound();
+
+  const supabase = await createClient();
+  const { data: dbListing } = await supabase.from("listings").select("*").eq("slug", slug).single();
+
+  if (!dbListing) notFound();
+
+  // Map from DB structure to standard Listing structure
+  const listing: any = {
+    ...dbListing,
+    location: {
+      area: dbListing.location_area,
+      city: dbListing.location_city,
+      state: dbListing.location_state,
+      fullAddress: dbListing.location_full_address,
+    },
+    specs: {
+      area: dbListing.specs_area,
+      bedrooms: dbListing.specs_bedrooms,
+      bathrooms: dbListing.specs_bathrooms,
+      facing: dbListing.specs_facing,
+      floor: dbListing.specs_floor,
+      furnishing: dbListing.specs_furnishing,
+      parking: dbListing.specs_parking,
+      availability: dbListing.specs_availability,
+      tenantRestriction: dbListing.specs_tenant_restriction,
+    }
+  };
 
   // Schema.org structured data for each listing
   const jsonLd = {
@@ -176,7 +201,7 @@ export default async function ListingDetailPage({ params }: Props) {
                   Key Features
                 </h2>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {listing.features.map((f) => (
+                  {(listing.features || []).map((f: string) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-[var(--color-text-muted)]">
                       <CheckCircle size={15} className="text-green-500 shrink-0 mt-0.5" />
                       {f}
@@ -192,7 +217,7 @@ export default async function ListingDetailPage({ params }: Props) {
                     Community Amenities
                   </h2>
                   <div className="flex flex-wrap gap-2">
-                    {listing.amenities.map((a) => (
+                    {listing.amenities.map((a: string) => (
                       <span key={a} className="tag">{a}</span>
                     ))}
                   </div>

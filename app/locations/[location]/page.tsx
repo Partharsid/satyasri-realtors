@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MapPin, Phone } from "lucide-react";
-import listings from "@/data/listings";
+import { createClient } from "@/utils/supabase/server";
 import ListingCard from "@/components/ListingCard";
 import { BUSINESS } from "@/data/business";
 
@@ -51,14 +51,17 @@ const locations = [
   },
 ];
 
-export function generateStaticParams() {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
   return locations.map((loc) => ({
     location: loc.slug,
   }));
 }
 
-export function generateMetadata({ params }: { params: { location: string } }): Metadata {
-  const loc = locations.find((l) => l.slug === params.location);
+export async function generateMetadata({ params }: { params: Promise<{ location: string }> }): Promise<Metadata> {
+  const { location } = await params;
+  const loc = locations.find((l) => l.slug === location);
   if (!loc) return { title: "Location Not Found" };
   return {
     title: `Properties in ${loc.name} | Satyasri Realtors`,
@@ -66,17 +69,44 @@ export function generateMetadata({ params }: { params: { location: string } }): 
   };
 }
 
-export default function LocationPage({ params }: { params: { location: string } }) {
-  const loc = locations.find((l) => l.slug === params.location);
+export default async function LocationPage({ params }: { params: Promise<{ location: string }> }) {
+  const { location } = await params;
+  const loc = locations.find((l) => l.slug === location);
 
   if (!loc) {
     notFound();
   }
 
-  // Filter listings by this location (simple substring match on location string)
-  const areaListings = listings.filter((l) =>
-    `${l.location.area} ${l.location.city} ${l.location.state}`.toLowerCase().includes(loc.name.toLowerCase())
-  );
+  const supabase = await createClient();
+  const { data: dbListings } = await supabase
+    .from("listings")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const areaListings = (dbListings || [])
+    .map((l: any) => ({
+      ...l,
+      location: {
+        area: l.location_area,
+        city: l.location_city,
+        state: l.location_state,
+        fullAddress: l.location_full_address,
+      },
+      specs: {
+        area: l.specs_area,
+        bedrooms: l.specs_bedrooms,
+        bathrooms: l.specs_bathrooms,
+        facing: l.specs_facing,
+        floor: l.specs_floor,
+        furnishing: l.specs_furnishing,
+        parking: l.specs_parking,
+        availability: l.specs_availability,
+        tenantRestriction: l.specs_tenant_restriction,
+      }
+    }))
+    .filter((l) =>
+      `${l.location.area} ${l.location.city} ${l.location.state}`.toLowerCase().includes(loc.name.toLowerCase())
+    );
 
   return (
     <div className="pt-28 pb-16">
