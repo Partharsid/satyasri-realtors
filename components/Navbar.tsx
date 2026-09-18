@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Menu, X, Phone } from "lucide-react";
 import { BUSINESS } from "@/data/business";
 
+import Image from "next/image";
+
 const locationsMenu = [
   { label: "Hitech City", href: "/locations/hitech-city" },
   { label: "Gachibowli", href: "/locations/gachibowli" },
@@ -20,43 +22,6 @@ const navLinks = [
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ];
-
-/** Satyasri Realtors building/skyline icon — gold, matches brand brief */
-function SatyasriLogoIcon({ size = 36 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      {/* Background rounded square */}
-      <rect width="40" height="40" rx="9" fill="#C9A227" />
-      {/* Building skyline — white icon on gold */}
-      {/* Left short building */}
-      <rect x="5" y="20" width="7" height="14" rx="1" fill="white" opacity="0.9" />
-      {/* Left building window */}
-      <rect x="7" y="23" width="3" height="3" rx="0.5" fill="#C9A227" />
-      {/* Centre tall building */}
-      <rect x="14" y="12" width="12" height="22" rx="1" fill="white" />
-      {/* Centre building windows */}
-      <rect x="16.5" y="15" width="3" height="3" rx="0.5" fill="#C9A227" />
-      <rect x="21" y="15" width="3" height="3" rx="0.5" fill="#C9A227" />
-      <rect x="16.5" y="21" width="3" height="3" rx="0.5" fill="#C9A227" />
-      <rect x="21" y="21" width="3" height="3" rx="0.5" fill="#C9A227" />
-      {/* Centre building roof peak */}
-      <polygon points="20,6 14,13 26,13" fill="white" opacity="0.85" />
-      {/* Right building */}
-      <rect x="28" y="17" width="7" height="17" rx="1" fill="white" opacity="0.9" />
-      {/* Right building window */}
-      <rect x="30" y="20" width="3" height="3" rx="0.5" fill="#C9A227" />
-      {/* Ground line */}
-      <rect x="4" y="33.5" width="32" height="1.5" rx="0.75" fill="white" opacity="0.4" />
-    </svg>
-  );
-}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -80,7 +45,15 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <SatyasriLogoIcon size={38} />
+            <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-white shadow-sm border border-[#e5e0d8] flex items-center justify-center">
+              <Image
+                src="/logo.jpeg"
+                alt="Satyasri Realtors Logo"
+                fill
+                className="object-cover"
+                sizes="40px"
+              />
+            </div>
             <div className="leading-tight">
               <span
                 className={`font-bold text-lg font-[var(--font-poppins)] transition-colors block leading-none ${

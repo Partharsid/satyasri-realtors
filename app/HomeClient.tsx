@@ -406,6 +406,25 @@ export default function HomeClient({ featured }: { featured: Listing[] }) {
                 Send an Enquiry
               </Link>
             </motion.div>
+
+            {/* Audit Link */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              custom={3}
+              className="mt-6"
+            >
+              <a
+                href="/audit.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-[#C9A227] hover:text-white hover:underline transition-colors"
+              >
+                View our Compliance Audit Report &rarr;
+              </a>
+            </motion.div>
           </div>
         </div>
       </section>
