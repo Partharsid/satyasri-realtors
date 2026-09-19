@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MapPin, Target, Eye } from "lucide-react";
+import { MapPin, Target, Eye, User } from "lucide-react";
 import { BUSINESS } from "@/data/business";
 
 
@@ -59,10 +59,9 @@ export default function AboutPage() {
 
           {/* Founder Profile */}
           <div className="md:col-span-4 card p-6 bg-[var(--color-surface)] text-center flex flex-col items-center">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md mb-4 bg-gray-200 relative">
-              {/* TODO(founder-photo): Replace with actual photo of Mahesh Kumar Aerwa */}
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                <span className="text-sm font-medium px-2">Photo Placeholder</span>
+            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md mb-4 bg-gray-100 relative">
+              <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+                <User size={64} strokeWidth={1} />
               </div>
             </div>
             <h3 className="font-bold text-lg text-[var(--color-secondary)] font-[var(--font-poppins)]">

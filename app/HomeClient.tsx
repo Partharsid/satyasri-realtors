@@ -12,6 +12,7 @@ import {
   MapPin,
   ArrowRight,
 } from "lucide-react";
+import Image from "next/image";
 import { BUSINESS } from "@/data/business";
 import ListingCard from "@/components/ListingCard";
 import LeadForm from "@/components/LeadForm";
@@ -348,10 +349,34 @@ export default function HomeClient({ featured }: { featured: Listing[] }) {
               View Profile
             </a>
           </motion.div>
-          <div className="card p-8 text-center border-dashed border-2 border-[#e5e0d8] bg-transparent">
-            {/* TODO(instagram-embed): Client needs to provide an embeddable Instagram widget code (like Elfsight or LightWidget) to show live feed here. */}
-            <p className="text-[#64748b] mb-4">Instagram feed placeholder.</p>
-            <p className="text-sm text-[#64748b]">To display live posts here, configure an Instagram embed widget and drop the code in this section.</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600",
+              "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=600",
+              "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=600",
+              "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=600"
+            ].map((src, i) => (
+              <a
+                key={i}
+                href={BUSINESS.contact.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative aspect-square rounded-2xl overflow-hidden group shadow-sm hover:shadow-md transition-all"
+              >
+                <Image
+                  src={src}
+                  alt="Instagram post"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  </div>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </section>

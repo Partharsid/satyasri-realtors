@@ -224,16 +224,23 @@ export default async function ListingDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Map embed placeholder */}
+              {/* Map embed */}
               <div>
                 <h2 className="font-semibold font-[var(--font-poppins)] mb-3 text-[var(--color-secondary)]">
                   Location
                 </h2>
-                <div className="rounded-2xl overflow-hidden h-56 bg-[var(--color-surface)] flex items-center justify-center border border-[var(--color-border)]">
-                  {/* TODO: Embed Google Maps iframe for this listing's location */}
-                  <p className="text-sm text-[var(--color-text-muted)]">
-                    Map embed — {listing.location.area}, {listing.location.city}
-                  </p>
+                <div className="rounded-2xl overflow-hidden h-64 bg-[var(--color-surface)] border border-[var(--color-border)] relative">
+                  <iframe
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(`${listing.location.area}, ${listing.location.city}, ${listing.location.state}`)}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen={false}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title={`Map of ${listing.location.area}, ${listing.location.city}`}
+                    className="absolute inset-0 z-0"
+                  />
                 </div>
               </div>
             </div>

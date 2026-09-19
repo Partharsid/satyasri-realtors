@@ -125,23 +125,19 @@ export default function ContactPage() {
             </div>
 
             {/* Map embed */}
-            <div className="rounded-2xl overflow-hidden h-60 bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center relative">
-              {/* TODO(add-gbp-place-link): Replace the href below with the exact Google Maps / Google Business Profile share link, and drop in a live Google Maps embed iframe here. */}
-              <div className="text-center p-6 relative z-10">
-                <MapPin size={32} className="text-[#C9A227] mx-auto mb-2" />
-                <p className="text-sm font-medium mb-1">{BUSINESS.name}</p>
-                <p className="text-xs text-[var(--color-text-muted)] max-w-sm mx-auto">
-                  {BUSINESS.address.full}
-                </p>
-                <a
-                  href={BUSINESS.contact.googleMaps}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-full bg-white border border-[#C9A227] text-xs font-bold text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-colors"
-                >
-                  View on Google Maps <ExternalLink size={12} />
-                </a>
-              </div>
+            <div className="rounded-2xl overflow-hidden h-60 bg-[var(--color-surface)] border border-[var(--color-border)] relative">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30448.243501633515!2d78.34440810168305!3d17.466042455110462!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93a2eb620bf7%3A0x9d3ebc3619cd30bc!2sKondapur%2C%20Telangana!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Office Location Map"
+                className="absolute inset-0"
+              />
+              {/* Overlay with subtle shadow for aesthetics, clickable through via pointer-events-none on the shadow if needed, but here we just let the map be interactive */}
             </div>
           </div>
 
