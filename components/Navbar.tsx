@@ -45,13 +45,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-white shadow-sm border border-[#e5e0d8] flex items-center justify-center">
+            <div className="relative w-14 h-14 overflow-hidden rounded-lg bg-transparent flex items-center justify-center">
               <Image
                 src="/logo.jpeg"
                 alt="Satyasri Realtors Logo"
                 fill
-                className="object-cover"
-                sizes="40px"
+                className="object-contain mix-blend-multiply"
+                sizes="56px"
               />
             </div>
             <div className="leading-tight">
