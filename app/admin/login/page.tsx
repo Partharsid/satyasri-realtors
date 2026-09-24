@@ -1,89 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
-import { BUSINESS } from "@/data/business";
-import { ShieldAlert } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { browserClient } from "@/lib/supabase/browser";
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+    const f = new FormData(e.currentTarget);
+    setBusy(true);
     setError("");
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
+    const { error } = await browserClient().auth.signInWithPassword({ email: String(f.get("email")), password: String(f.get("password")) });
     if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      router.push("/admin");
-      router.refresh();
+      setError(error.message === "Invalid login credentials" ? "Wrong email or password." : error.message);
+      setBusy(false);
+      return;
     }
-  };
+    router.replace("/admin");
+    router.refresh();
+  }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="card p-8 w-full max-w-md bg-white shadow-xl border-t-4 border-t-[#C9A227]">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold font-[var(--font-poppins)] text-[#0f2d5c] mb-2">
-            Admin Login
-          </h1>
-          <p className="text-[#64748b]">Sign in to manage {BUSINESS.name}</p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 text-red-700 p-4 rounded-lg text-sm mb-6 flex items-start gap-2 border border-red-200">
-            <ShieldAlert size={18} className="shrink-0 mt-0.5" />
-            <p>{error}</p>
-          </div>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-[#e5e0d8] focus:border-[#C9A227] outline-none transition-colors"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1.5 text-[#0f2d5c]">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-[#e5e0d8] focus:border-[#C9A227] outline-none transition-colors"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full justify-center disabled:opacity-70 mt-2"
-          >
-            {loading ? "Signing in..." : "Sign In"}
+    <main className="grid min-h-svh place-items-center p-4">
+      <div className="w-full max-w-sm rounded-card bg-paper p-8">
+        <Image src="/brand/logo-full.svg" alt="SatyaSri Realtors" width={140} height={161} className="mx-auto h-auto w-[120px]" priority />
+        <h1 className="mt-8 text-center text-[22px] font-light">Admin sign in</h1>
+        <form onSubmit={onSubmit} className="mt-6 grid gap-4">
+          <label className="grid gap-1.5 text-[13px] text-pewter">
+            Email
+            <input name="email" type="email" required autoComplete="username" className="field" />
+          </label>
+          <label className="grid gap-1.5 text-[13px] text-pewter">
+            Password
+            <input name="password" type="password" required autoComplete="current-password" className="field" />
+          </label>
+          {error ? <p role="alert" className="text-[13px] text-brand-deep">{error}</p> : null}
+          <button type="submit" disabled={busy} className="btn btn-dark mt-2 w-full">
+            {busy ? "Signing in…" : "Sign in"} <ArrowRight size={16} strokeWidth={1.5} aria-hidden />
           </button>
         </form>
       </div>
-    </div>
+    </main>
   );
 }

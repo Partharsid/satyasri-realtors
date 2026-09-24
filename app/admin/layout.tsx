@@ -1,25 +1,18 @@
 import type { Metadata } from "next";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import AdminTopbar from "./AdminTopbar";
+import { Montserrat } from "next/font/google";
+import "../globals.css";
+
+const montserrat = Montserrat({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-montserrat", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Admin Panel | Satyasri Realtors",
-  description: "Secure admin dashboard for managing properties and leads.",
-  robots: "noindex, nofollow",
+  title: { default: "Admin — SatyaSri Realtors", template: "%s — SatyaSri Admin" },
+  robots: { index: false, follow: false, nocache: true },
 };
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  const user = data.user;
-
+export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#f8f7f4] pt-20">
-      <AdminTopbar userEmail={user?.email} />
-      <div className="container mx-auto py-8 px-4 sm:px-6">
-        {children}
-      </div>
-    </div>
+    <html lang="en" className={montserrat.variable}>
+      <body className="min-h-svh bg-mist-soft">{children}</body>
+    </html>
   );
 }

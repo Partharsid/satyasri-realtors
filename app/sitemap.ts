@@ -1,43 +1,28 @@
-import { MetadataRoute } from 'next';
-import { BUSINESS } from '@/data/business';
-import listings from '@/data/listings';
+import type { MetadataRoute } from "next";
+import { getListings, getPosts } from "@/lib/data";
+import { LOCALES, LOCALE_LABELS } from "@/lib/i18n/config";
+import { AREA_KEYS, SITE_URL } from "@/lib/site";
 
-const BASE_URL = `https://${BUSINESS.contact.website}`;
+export const revalidate = 3600;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = [
-    '',
-    '/about',
-    '/services',
-    '/listings',
-    '/contact',
-  ].map((route) => ({
-    url: `${BASE_URL}${route}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
-  }));
+function entry(path: string, lastModified: Date, priority: number, changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]) {
+  const p = path === "/" ? "" : path;
+  return {
+    url: `${SITE_URL}/en${p}`,
+    lastModified,
+    changeFrequency,
+    priority,
+    alternates: { languages: Object.fromEntries(LOCALES.map((l) => [LOCALE_LABELS[l].htmlLang, `${SITE_URL}/${l}${p}`])) },
+  };
+}
 
-  const locationRoutes = [
-    'hitech-city',
-    'gachibowli',
-    'kondapur',
-    'financial-district',
-    'kokapet',
-    'manikonda',
-  ].map((loc) => ({
-    url: `${BASE_URL}/locations/${loc}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
-
-  const listingRoutes = listings.map((listing) => ({
-    url: `${BASE_URL}/listings/${listing.slug}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: 'daily' as const,
-    priority: 0.9,
-  }));
-
-  return [...staticRoutes, ...locationRoutes, ...listingRoutes];
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [listings, posts] = await Promise.all([getListings(), getPosts()]);
+  const now = new Date();
+  const statics = ["/", "/listings", "/services", "/about", "/contact", "/blog"].map((p) => entry(p, now, p === "/" ? 1 : 0.8, "weekly"));
+  const areas = AREA_KEYS.map((k) => entry(`/locations/${k}`, now, 0.8, "weekly"));
+  const props = listings.map((l) => entry(`/listings/${l.slug}`, new Date(l.updated_at), l.status === "available" ? 0.9 : 0.4, "weekly"));
+  // Blog posts are English-only.
+  const blog = posts.map((p) => ({ url: `${SITE_URL}/en/blog/${p.slug}`, lastModified: new Date(p.updated_at), changeFrequency: "monthly" as const, priority: 0.6 }));
+  return [...statics, ...areas, ...props, ...blog];
 }
