@@ -23,6 +23,7 @@ where slug = '3bhk-aditya-heights-kondapur';
 update public.listings set
   area_key = 'gachibowli',
   price_value = 75000, price_unit = 'month', sort_order = 2,
+  features = features || case when features ? 'Rent ₹75,000/month plus society maintenance' then '[]'::jsonb else '["Rent ₹75,000/month plus society maintenance"]'::jsonb end,
   images = '["/media/photos/interior-lounge.jpg","/media/photos/interior-bedroom.jpg","/media/photos/interior-kitchen.jpg"]'::jsonb,
   thumbnail = '/media/photos/interior-lounge.jpg'
 where slug = '3bhk-ramky-towers-gachibowli';
