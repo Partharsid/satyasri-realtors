@@ -64,7 +64,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                 <Image src="/media/photos/area-kondapur.jpg" alt="" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover opacity-60" />
                 <span className="absolute inset-0 grid place-items-center">
                   <span className="grid size-36 place-items-center rounded-full border border-paper/40 bg-char/60 text-[46px] font-light tracking-[-0.02em] text-paper backdrop-blur-sm">
-                    MA
+                    MK
                   </span>
                 </span>
               </>

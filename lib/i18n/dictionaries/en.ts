@@ -71,7 +71,7 @@ const en = {
     areasLabel: "Where we work",
     areasHeading: "The neighbourhoods we know street by street.",
     founderLabel: "Founder",
-    founderHeading: "Mahesh Kumar Aerwa",
+    founderHeading: "Mahesh Kumar",
     founderBody:
       "Mahesh founded SatyaSri Realtors in 2009 and has spent the years since helping people across West Hyderabad find, sell and rent homes. Clients describe the same things again and again: honest advice, patient follow-through with banks and authorities, and paperwork handled all the way to registration — even for owners living outside Hyderabad or India.",
     founderCta: "Our story",
@@ -133,7 +133,7 @@ const en = {
   about: {
     metaTitle: "About — SatyaSri Realtors, Kondapur, since 2009",
     metaDescription:
-      "SatyaSri Realtors is a registered real estate consultancy in Kondapur, Hyderabad, founded by Mahesh Kumar Aerwa in 2009 and rated 5.0 on Google.",
+      "SatyaSri Realtors is a registered real estate consultancy in Kondapur, Hyderabad, founded by Mahesh Kumar in 2009 and rated 5.0 on Google.",
     label: "About us",
     heading: "A Kondapur consultancy built on trust since 2009.",
     intro:
@@ -145,7 +145,7 @@ const en = {
     founderLabel: "Founder",
     founderRole: "Founder & Real Estate Consultant",
     founderBio:
-      "Mahesh Kumar Aerwa is the founder of SatyaSri Realtors. Based in Kondapur, he works directly with buyers, sellers, owners and tenants across West Hyderabad. Clients consistently mention his transparency, his follow-up with banks and government authorities, and his end-to-end support through registration — including for owners who live outside Hyderabad or abroad.",
+      "Mahesh Kumar is the founder of SatyaSri Realtors. Based in Kondapur, he works directly with buyers, sellers, owners and tenants across West Hyderabad. Clients consistently mention his transparency, his follow-up with banks and government authorities, and his end-to-end support through registration — including for owners who live outside Hyderabad or abroad.",
     missionLabel: "Mission",
     mission:
       "To make buying, selling and renting property in Hyderabad simple and honest — with genuine listings, clear advice and complete support from first visit to final handover.",

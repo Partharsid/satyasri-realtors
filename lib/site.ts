@@ -14,7 +14,7 @@ export const SITE = {
   shortName: "SatyaSri",
   legalCategory: "Registered Real Estate Consultant",
   since: 2009,
-  founder: "Mahesh Kumar Aerwa",
+  founder: "Mahesh Kumar",
   phone: PHONE,
   phoneDisplay: "+91 90142 24408",
   phoneHref: `tel:+91${PHONE}`,
