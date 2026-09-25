@@ -25,17 +25,29 @@ export default function Header({ lang, homeHref, items, labels, phoneHref, phone
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [solid, setSolid] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
+  // Solid background after the hero; slide away on scroll down, return on scroll up.
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 40);
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setSolid(y > 40);
+      if (Math.abs(y - last) > 6) {
+        setHidden(y > last && y > 240);
+        last = y;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock page scroll while the menu is open; Escape closes it.
+  // Freeze page scroll (native + Lenis) while the menu is open; Escape closes it.
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+    if (open) window.__lenis?.stop();
+    else window.__lenis?.start();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -55,7 +67,9 @@ export default function Header({ lang, homeHref, items, labels, phoneHref, phone
         {labels.skip}
       </a>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
+        data-hidden={hidden && !open}
+        style={{ viewTransitionName: "site-header" }}
+        className={`site-header fixed inset-x-0 top-0 z-50 ${
           light ? "border-b border-transparent" : "border-b border-mist bg-paper/92 backdrop-blur-md"
         } ${open ? "!border-transparent !bg-transparent !backdrop-blur-none" : ""}`}
       >
@@ -102,16 +116,19 @@ export default function Header({ lang, homeHref, items, labels, phoneHref, phone
         role="dialog"
         aria-modal="true"
         aria-label={labels.menu}
-        hidden={!open}
-        className="fixed inset-0 z-40 overflow-y-auto overflow-x-hidden bg-char text-paper"
+        aria-hidden={!open}
+        inert={!open}
+        data-open={open}
+        data-lenis-prevent
+        className="menu-panel fixed inset-0 z-40 overflow-y-auto overflow-x-hidden bg-char text-paper"
       >
         <div className="wrap pb-16 pt-24 md:pt-28">
           <nav>
             <ul className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
-              {items.map((item) => {
+              {items.map((item, i) => {
                 const active = pathname === item.href || (item.href !== homeHref && pathname?.startsWith(item.href));
                 return (
-                  <li key={item.href}>
+                  <li key={item.href} className="menu-item" style={{ ["--i" as string]: i }}>
                     <Link
                       href={item.href}
                       onClick={() => setOpen(false)}
@@ -133,7 +150,7 @@ export default function Header({ lang, homeHref, items, labels, phoneHref, phone
             </ul>
           </nav>
 
-          <div className="mt-10 flex flex-col gap-6 border-t border-iron pt-8 md:flex-row md:items-center md:justify-between">
+          <div className="menu-item mt-10 flex flex-col gap-6 border-t border-iron pt-8 md:flex-row md:items-center md:justify-between" style={{ ["--i" as string]: items.length }}>
             <div>
               <span className="label !text-smoke">{labels.language}</span>
               <div className="mt-3 flex gap-2">

@@ -9,6 +9,7 @@ import { fill, getDictionary, href, isLocale, LOCALES } from "@/lib/i18n";
 import { getListings } from "@/lib/data";
 import { AREAS, AREA_KEYS, isAreaKey, mapEmbed, SITE, SITE_URL, whatsappLink } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
+import PageTransition from "@/components/motion/PageTransition";
 
 export const revalidate = 600;
 export const dynamicParams = false;
@@ -44,7 +45,7 @@ export default async function AreaPage({ params }: PageProps<"/[lang]/locations/
   };
 
   return (
-    <>
+    <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(placeLd)} />
       <PhotoHero image={info.image} label={`${t.areas.label} · Hyderabad`} title={info.name} tall />
 
@@ -52,11 +53,11 @@ export default async function AreaPage({ params }: PageProps<"/[lang]/locations/
         <div className="wrap grid gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
             <span className="label mb-3">{t.areas.overviewLabel}</span>
-            <p className="lede text-[19px] text-[#1a1a1a] md:text-[21px]">{copy.overview}</p>
+            <p className="lede text-[19px] text-[#1a1a1a] md:text-[21px]" data-reveal="up">{copy.overview}</p>
           </div>
           <div className="md:col-span-5">
             <span className="label mb-3">{t.areas.highlightsLabel}</span>
-            <ol>
+            <ol data-reveal="stagger">
               {copy.highlights.map((h, i) => (
                 <li key={h} className="hairline grid grid-cols-[40px_1fr] py-4">
                   <span className="pt-0.5 text-[12px] text-pewter tabular-nums">{String(i + 1).padStart(2, "0")}</span>
@@ -72,7 +73,7 @@ export default async function AreaPage({ params }: PageProps<"/[lang]/locations/
         <div className="wrap">
           <SectionHeading title={fill(t.areas.propertiesHeading, { area: info.name })} size="md" className="mb-10" />
           {listings.length ? (
-            <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
               {listings.map((l) => (
                 <ListingCard key={l.id} listing={l} lang={lang} t={t} />
               ))}
@@ -89,7 +90,7 @@ export default async function AreaPage({ params }: PageProps<"/[lang]/locations/
       </section>
 
       <section className="pb-20 md:pb-28">
-        <div className="wrap grid gap-3 md:grid-cols-2">
+        <div className="wrap grid gap-3 md:grid-cols-2" data-reveal="stagger">
           <div className="relative min-h-[360px] overflow-hidden rounded-card bg-mist">
             <iframe
               title={fill(t.areas.mapHeading, { area: info.name })}
@@ -120,7 +121,7 @@ export default async function AreaPage({ params }: PageProps<"/[lang]/locations/
       <section className="border-t border-mist bg-mist-soft section-gap">
         <div className="wrap">
           <SectionHeading label={t.home.areasLabel} title={t.home.areasHeading} size="md" className="mb-10" />
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-5">
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-5" data-reveal="stagger">
             {others.map((k) => (
               <li key={k}>
                 <Link href={href(lang, `/locations/${k}`)} className="group relative block aspect-[4/5] overflow-hidden rounded-card bg-char">
@@ -136,6 +137,6 @@ export default async function AreaPage({ params }: PageProps<"/[lang]/locations/
           </ul>
         </div>
       </section>
-    </>
+    </PageTransition>
   );
 }

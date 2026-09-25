@@ -6,6 +6,7 @@ import "../globals.css";
 import Header, { type MenuItem } from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingActions from "@/components/FloatingActions";
+import MotionRuntime from "@/components/motion/MotionRuntime";
 import { getDictionary, href, isLocale, LOCALES, LOCALE_LABELS } from "@/lib/i18n";
 import { getSettings } from "@/lib/data";
 import { SITE, SITE_URL } from "@/lib/site";
@@ -116,8 +117,17 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
     <html
       lang={LOCALE_LABELS[lang].htmlLang}
       className={`${montserrat.variable} ${lora.variable} ${notoTelugu.variable} ${notoDevanagari.variable}`}
+      suppressHydrationWarning
     >
       <body className="min-h-svh">
+        {/* Enable motion styles before first paint; reveal everything if the runtime never boots. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "document.documentElement.classList.add('js');setTimeout(function(){var d=document.documentElement;if(!d.classList.contains('motion-ready'))d.classList.add('motion-fallback')},3500);",
+          }}
+        />
+        <div aria-hidden className="scroll-progress fixed inset-x-0 top-0 z-[60] h-[2px] bg-brand" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd).replace(/</g, "\\u003c") }} />
         <Header
           lang={lang}
@@ -131,6 +141,7 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
         <main id="main" className="pb-[68px] md:pb-0">{children}</main>
         <Footer lang={lang} t={t} settings={settings} />
         <FloatingActions callLabel={t.cta.call} whatsappLabel={t.cta.whatsapp} />
+        <MotionRuntime />
         {gaId ? (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />

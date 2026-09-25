@@ -8,6 +8,7 @@ import { getDictionary, isLocale } from "@/lib/i18n";
 import { getSettings } from "@/lib/data";
 import { AREAS, AREA_KEYS, SITE } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
+import PageTransition from "@/components/motion/PageTransition";
 
 export const revalidate = 600;
 
@@ -38,7 +39,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
   ];
 
   return (
-    <>
+    <PageTransition>
       <PhotoHero image="/media/photos/service-consult.jpg" label={t.contact.label} title={t.contact.heading}>
         <p>{t.contact.intro}</p>
       </PhotoHero>
@@ -46,7 +47,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
       <section className="section-gap">
         <div className="wrap grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <dl>
+            <dl data-reveal="stagger">
               {rows.map(({ Icon, label, value, href: h, external }) => (
                 <div key={label} className="hairline grid grid-cols-[28px_1fr] gap-x-3 py-5">
                   <Icon size={18} strokeWidth={1.4} className="mt-0.5 text-brand" aria-hidden />
@@ -88,7 +89,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
           </div>
 
           <div id="enquiry" className="scroll-mt-28 lg:col-span-7">
-            <div className="rounded-card border border-mist p-5 md:p-8">
+            <div className="rounded-card border border-mist p-5 md:p-8" data-reveal="up">
               <h2 className="heading mb-6">{t.contact.formHeading}</h2>
               <LeadForm
                 t={t.form}
@@ -113,6 +114,6 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
           referrerPolicy="no-referrer-when-downgrade"
         />
       </section>
-    </>
+    </PageTransition>
   );
 }

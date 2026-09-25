@@ -21,7 +21,7 @@ export function ReviewCard({ review: r }: { review: Review }) {
 export function ReviewsRail({ reviews }: { reviews: Review[] }) {
   return (
     <div className="overflow-x-auto overscroll-x-contain [scrollbar-width:thin]" tabIndex={0} role="region" aria-label="Google reviews">
-      <ul className="flex snap-x snap-mandatory gap-3 px-4 pb-4 md:px-[max(32px,calc((100vw-1200px)/2+32px))]">
+      <ul data-reveal="stagger" className="flex snap-x snap-mandatory gap-3 px-4 pb-4 md:px-[max(32px,calc((100vw-1200px)/2+32px))]">
         {reviews.map((r) => (
           <li key={r.id} className="w-[85vw] max-w-[380px] shrink-0 snap-start">
             <ReviewCard review={r} />

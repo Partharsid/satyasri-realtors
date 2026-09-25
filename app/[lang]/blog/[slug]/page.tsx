@@ -10,6 +10,7 @@ import { getPost, getPosts } from "@/lib/data";
 import { readingMinutes } from "@/lib/format";
 import { SITE, SITE_URL } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
+import PageTransition from "@/components/motion/PageTransition";
 
 export const revalidate = 600;
 
@@ -52,7 +53,7 @@ export default async function PostPage({ params }: PageProps<"/[lang]/blog/[slug
   };
 
   return (
-    <>
+    <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(articleLd)} />
       <PhotoHero image={post.cover ?? "/media/photos/service-signing.jpg"} label={t.blog.label} title={post.title} compact>
         <p className="text-[14px]">
@@ -87,7 +88,7 @@ export default async function PostPage({ params }: PageProps<"/[lang]/blog/[slug
         <section className="border-t border-mist bg-mist-soft section-gap">
           <div className="wrap">
             <SectionHeading label={t.blog.label} title={t.home.journalHeading} size="md" className="mb-10" />
-            <div className="grid gap-x-6 gap-y-10 md:grid-cols-3">
+            <div className="grid gap-x-6 gap-y-10 md:grid-cols-3" data-reveal="stagger">
               {more.map((p) => (
                 <PostCard key={p.id} post={p} lang={lang} minRead={t.blog.minRead} />
               ))}
@@ -95,6 +96,6 @@ export default async function PostPage({ params }: PageProps<"/[lang]/blog/[slug
           </div>
         </section>
       ) : null}
-    </>
+    </PageTransition>
   );
 }

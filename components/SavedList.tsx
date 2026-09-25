@@ -32,7 +32,7 @@ export default function SavedList({ cards, t }: { cards: Card[]; t: Dictionary["
           <WhatsAppIcon size={17} /> {t.enquireAll}
         </a>
       </div>
-      <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
         {mine.map((c) => (
           <div key={c.slug}>{c.node}</div>
         ))}

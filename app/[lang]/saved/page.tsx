@@ -5,6 +5,7 @@ import { PhotoHero } from "@/components/ui";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import { getListings } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
+import PageTransition from "@/components/motion/PageTransition";
 
 export const revalidate = 600;
 
@@ -30,11 +31,11 @@ export default async function SavedPage({ params }: PageProps<"/[lang]/saved">) 
   }));
 
   return (
-    <>
+    <PageTransition>
       <PhotoHero image="/media/photos/interior-lounge.jpg" title={t.saved.heading} />
       <section className="wrap section-gap">
         <SavedList cards={cards} t={t.saved} />
       </section>
-    </>
+    </PageTransition>
   );
 }

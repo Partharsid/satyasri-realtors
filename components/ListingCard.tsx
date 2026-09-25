@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ViewTransition } from "react";
 import Link from "next/link";
 import { BedDouble, Compass, Car, MapPin, Ruler } from "lucide-react";
 import type { ListingRow } from "@/lib/data";
@@ -32,6 +33,7 @@ export default function ListingCard({
     <article className="group relative flex h-full flex-col">
       <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-mist">
         {l.thumbnail ? (
+          <ViewTransition name={`listing-${l.slug}`} share="morph" default="none">
           <Image
             src={l.thumbnail}
             alt={l.title}
@@ -40,6 +42,7 @@ export default function ListingCard({
             sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
             className={`photo-zoom object-cover ${unavailable ? "grayscale" : ""}`}
           />
+          </ViewTransition>
         ) : null}
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           <span className="pill !bg-paper/95">{t.listings.transaction[l.transaction] ?? l.transaction}</span>

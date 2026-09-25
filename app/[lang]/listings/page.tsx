@@ -9,6 +9,7 @@ import { getListings } from "@/lib/data";
 import { filterListings, readFilters } from "@/lib/filter";
 import { pageMeta } from "@/lib/seo";
 import { AREAS, AREA_KEYS, SITE } from "@/lib/site";
+import PageTransition from "@/components/motion/PageTransition";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/listings">) {
   const { lang } = await params;
@@ -33,7 +34,7 @@ export default async function ListingsPage({ params, searchParams }: PageProps<"
   const ordered = [...results].sort((a, b) => Number(a.status !== "available") - Number(b.status !== "available"));
 
   return (
-    <>
+    <PageTransition>
       <PhotoHero image="/media/photos/interior-living.jpg" label={t.listings.label} title={t.listings.heading}>
         <p>{t.listings.metaDescription}</p>
       </PhotoHero>
@@ -68,7 +69,7 @@ export default async function ListingsPage({ params, searchParams }: PageProps<"
         </div>
 
         {ordered.length ? (
-          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
             {ordered.map((l, i) => (
               <ListingCard key={l.id} listing={l} lang={lang} t={t} priority={i < 3} />
             ))}
@@ -100,6 +101,6 @@ export default async function ListingsPage({ params, searchParams }: PageProps<"
           </ul>
         </nav>
       </section>
-    </>
+    </PageTransition>
   );
 }

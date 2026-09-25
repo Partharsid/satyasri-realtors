@@ -13,6 +13,7 @@ import { GoogleIcon, WhatsAppIcon } from "@/components/icons";
 import { fill, getDictionary, href, isLocale } from "@/lib/i18n";
 import { getListings, getPosts, getReviews, getSettings } from "@/lib/data";
 import { AREAS, AREA_KEYS, SITE } from "@/lib/site";
+import PageTransition from "@/components/motion/PageTransition";
 
 export const revalidate = 600;
 
@@ -38,23 +39,29 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const services = (["buy", "sell", "rent", "lease", "invest"] as const).map((k) => t.services.items[k]);
 
   return (
-    <>
+    <PageTransition>
       {/* ── Hero: full-bleed muted video, whisper-weight wordmark ─────────── */}
       <section className="relative isolate flex min-h-[calc(100svh-68px)] flex-col justify-between overflow-hidden bg-midnight text-paper md:min-h-[100svh]">
-        <HeroVideo poster="/media/hero-poster.jpg" className="absolute inset-0 -z-20 h-full w-full object-cover opacity-85 saturate-[.8]" />
+        <div className="hero-sink absolute inset-0 -z-20">
+          <HeroVideo poster="/media/hero-poster.jpg" className="hero-video h-full w-full object-cover opacity-85 saturate-[.8]" />
+        </div>
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/55 via-black/10 to-black/75" />
 
-        <div className="wrap pt-28 md:pt-36">
-          <p className="max-w-[420px] text-[15px] leading-relaxed text-paper/90 md:text-[16px]">{t.home.heroIntro}</p>
+        <div className="hero-exit wrap pt-28 md:pt-36">
+          <p className="hero-in max-w-[420px] text-[15px] leading-relaxed text-paper/90 md:text-[16px]" style={{ ["--d" as string]: 900 }}>{t.home.heroIntro}</p>
         </div>
 
-        <div className="wrap pb-10 md:pb-14">
-          <p className="mb-4 text-[12px] font-medium uppercase tracking-[0.3em] text-paper/80 md:text-[13px]">{t.home.heroTagline}</p>
+        <div className="hero-exit wrap pb-10 md:pb-14">
+          <p className="hero-in mb-4 text-[12px] font-medium uppercase tracking-[0.3em] text-paper/80 md:text-[13px]" style={{ ["--d" as string]: 200 }}>{t.home.heroTagline}</p>
           <h1 className="display -ml-[0.04em]">
-            SatyaSri
-            <span className="sr-only"> Realtors — {t.meta.title}</span>
+            <span className="wordmark" aria-hidden>
+              {"SatyaSri".split("").map((ch, i) => (
+                <span key={i} style={{ ["--i" as string]: i }}>{ch}</span>
+              ))}
+            </span>
+            <span className="sr-only">SatyaSri Realtors — {t.meta.title}</span>
           </h1>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="hero-in mt-8 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ ["--d" as string]: 1100 }}>
             <a href={SITE.phoneHref} className="btn bg-paper text-ink hover:bg-mist">
               <Phone size={16} strokeWidth={1.6} aria-hidden /> {t.cta.call} · {SITE.phoneDisplay}
             </a>
@@ -76,21 +83,21 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <section className="section-gap">
         <div className="wrap grid gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
-            <span className="label mb-3">{t.home.introLabel}</span>
-            <h2 className="heading-lg text-balance">{t.home.introHeading}</h2>
+            <span className="label mb-3" data-reveal="fade">{t.home.introLabel}</span>
+            <h2 className="heading-lg text-balance" data-reveal="up">{t.home.introHeading}</h2>
           </div>
-          <div className="md:col-span-5 md:pt-10">
+          <div className="md:col-span-5 md:pt-10" data-reveal="up" style={{ ["--d" as string]: 150 }}>
             <p className="lede text-[#1a1a1a]">{t.home.introBody}</p>
             <div className="mt-8">
               <ArrowLink href={href(lang, "/about")}>{t.home.founderCta}</ArrowLink>
             </div>
           </div>
         </div>
-        <dl className="wrap mt-16 grid grid-cols-2 gap-y-8 md:grid-cols-4">
+        <dl className="wrap mt-16 grid grid-cols-2 gap-y-8 md:grid-cols-4" data-reveal="stagger">
           {stats.map((s) => (
             <div key={s.label} className="hairline pr-4 pt-5">
               <dt className="label">{s.label}</dt>
-              <dd className="mt-2 text-[44px] font-light leading-none tracking-[-0.03em] md:text-[56px]">{s.value}</dd>
+              <dd className="mt-2 text-[44px] font-light leading-none tracking-[-0.03em] tabular-nums md:text-[56px]" data-count={s.value}>{s.value}</dd>
             </div>
           ))}
         </dl>
@@ -103,7 +110,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             <SectionHeading label={t.home.featuredLabel} title={t.home.featuredHeading} size="md" />
             <ArrowLink href={href(lang, "/listings")}>{t.cta.viewAll}</ArrowLink>
           </div>
-          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
             {shown.map((l) => (
               <ListingCard key={l.id} listing={l} lang={lang} t={t} />
             ))}
@@ -111,9 +118,25 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
+      {/* ── Slow marquee of what we do ───────────────────────────────────── */}
+      <div className="marquee overflow-hidden border-y border-mist py-6 md:py-8" aria-hidden>
+        <div className="marquee-track">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex shrink-0 items-center">
+              {[...services.map((s) => s.title), ...AREA_KEYS.map((k) => AREAS[k].name)].map((w) => (
+                <span key={w} className="flex items-center whitespace-nowrap text-[34px] font-light tracking-[-0.02em] text-ink/85 md:text-[52px]">
+                  <span className="px-6 md:px-10">{w}</span>
+                  <Image src="/brand/icon.svg" alt="" width={34} height={24} className="h-5 w-auto md:h-7" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── What we do: photo band + numbered list ───────────────────────── */}
       <section className="relative isolate overflow-hidden bg-midnight text-paper">
-        <Image src="/media/photos/city-night.jpg" alt="" fill sizes="100vw" className="-z-20 object-cover opacity-30" />
+        <Image src="/media/photos/city-night.jpg" alt="" fill sizes="100vw" className="parallax -z-20 object-cover opacity-30" />
         <div className="wrap section-gap grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <SectionHeading label={t.home.servicesLabel} title={t.home.servicesHeading} tone="light" />
@@ -121,7 +144,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               <ArrowLink href={href(lang, "/services")} tone="light">{t.nav.services}</ArrowLink>
             </div>
           </div>
-          <ol className="md:col-span-7 [&>li>div]:border-iron">
+          <ol className="md:col-span-7 [&>li>div]:border-iron" data-reveal="stagger">
             {services.map((s, i) => (
               <li key={s.title}>
                 <div className="grid grid-cols-[48px_1fr] gap-x-4 border-t py-6">
@@ -141,7 +164,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <section className="section-gap">
         <div className="wrap">
           <SectionHeading label={t.home.areasLabel} title={t.home.areasHeading} className="mb-10" />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
             {AREA_KEYS.map((k) => (
               <li key={k}>
                 <Link href={href(lang, `/locations/${k}`)} className="group relative block aspect-[4/3] overflow-hidden rounded-card bg-char">
@@ -163,7 +186,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
       {/* ── Founder: two-column feature cards ────────────────────────────── */}
       <section className="pb-20 md:pb-28">
-        <div className="wrap grid gap-3 md:grid-cols-2">
+        <div className="wrap grid gap-3 md:grid-cols-2" data-reveal="stagger">
           <div className="flex flex-col justify-between rounded-card bg-mist p-6 md:p-10">
             <div>
               <span className="label mb-3">{t.home.founderLabel}</span>
@@ -207,7 +230,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               <SectionHeading label={t.home.journalLabel} title={t.home.journalHeading} size="md" />
               <ArrowLink href={href(lang, "/blog")}>{t.nav.blog}</ArrowLink>
             </div>
-            <div className="grid gap-x-6 gap-y-10 md:grid-cols-3">
+            <div className="grid gap-x-6 gap-y-10 md:grid-cols-3" data-reveal="stagger">
               {posts.slice(0, 3).map((p) => (
                 <PostCard key={p.id} post={p} lang={lang} minRead={t.blog.minRead} />
               ))}
@@ -218,7 +241,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
       {/* ── Owner / seeker CTAs ──────────────────────────────────────────── */}
       <section className="pb-20 md:pb-28">
-        <div className="wrap grid gap-3 md:grid-cols-2">
+        <div className="wrap grid gap-3 md:grid-cols-2" data-reveal="stagger">
           <Link href={`${href(lang, "/contact")}?req=sell#enquiry`} className="group relative flex min-h-[340px] flex-col justify-between overflow-hidden rounded-card bg-pine p-6 text-paper md:p-10">
             <div>
               <span className="label mb-3 !text-mist/80">{t.home.ownerLabel}</span>
@@ -258,7 +281,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp"><WhatsAppIcon size={17} /> {t.cta.whatsapp}</a>
             </div>
           </div>
-          <div className="md:col-span-7">
+          <div className="md:col-span-7" data-reveal="up" style={{ ["--d" as string]: 150 }}>
             <LeadForm
               t={t.form}
               lang={lang}
@@ -271,7 +294,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </div>
         </div>
       </section>
-    </>
+    </PageTransition>
   );
 }
 

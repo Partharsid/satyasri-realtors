@@ -13,6 +13,7 @@ import { getListing, getListings } from "@/lib/data";
 import { formatPrice, isRepresentative } from "@/lib/format";
 import { AREAS, AREA_KEYS, isAreaKey, mapEmbed, SITE, SITE_URL, whatsappLink } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
+import PageTransition from "@/components/motion/PageTransition";
 
 export const revalidate = 600;
 
@@ -100,7 +101,7 @@ export default async function ListingPage({ params }: PageProps<"/[lang]/listing
   };
 
   return (
-    <>
+    <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(listingLd)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(crumbsLd)} />
 
@@ -109,6 +110,7 @@ export default async function ListingPage({ params }: PageProps<"/[lang]/listing
         label={`${t.listings.transaction[l.transaction] ?? l.transaction} · ${t.listings.types[l.type] ?? l.type}${unavailable ? ` · ${t.listings.status[l.status]}` : ""}`}
         title={l.title}
         compact
+        viewName={`listing-${l.slug}`}
       >
         <p className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
           <span className="text-[28px] font-light text-paper md:text-[34px]">
@@ -140,7 +142,7 @@ export default async function ListingPage({ params }: PageProps<"/[lang]/listing
 
           <section className="mt-12">
             <h2 className="heading-sm mb-6">{t.listing.details}</h2>
-            <dl className="grid grid-cols-2 gap-x-6 sm:grid-cols-3">
+            <dl className="grid grid-cols-2 gap-x-6 sm:grid-cols-3" data-reveal="stagger">
               {specs.map(([k, v]) => (
                 <div key={k} className="hairline py-4">
                   <dt className="label">{k}</dt>
@@ -160,7 +162,7 @@ export default async function ListingPage({ params }: PageProps<"/[lang]/listing
           {l.features?.length ? (
             <section className="mt-12">
               <h2 className="heading-sm mb-4">{t.listing.features}</h2>
-              <ul className="grid gap-x-8 sm:grid-cols-2">
+              <ul className="grid gap-x-8 sm:grid-cols-2" data-reveal="stagger">
                 {l.features.map((f) => (
                   <li key={f} className="hairline flex gap-3 py-3 text-[15px]">
                     <Check size={16} strokeWidth={1.8} className="mt-0.5 shrink-0 text-brand" aria-hidden /> {f}
@@ -173,7 +175,7 @@ export default async function ListingPage({ params }: PageProps<"/[lang]/listing
           {l.amenities?.length ? (
             <section className="mt-12">
               <h2 className="heading-sm mb-4">{t.listing.amenities}</h2>
-              <ul className="flex flex-wrap gap-2">
+              <ul className="flex flex-wrap gap-2" data-reveal="stagger">
                 {l.amenities.map((a) => (
                   <li key={a} className="pill !px-4 !py-2 !text-[13px]">{a}</li>
                 ))}
@@ -238,7 +240,7 @@ export default async function ListingPage({ params }: PageProps<"/[lang]/listing
         <section className="border-t border-mist bg-mist-soft section-gap">
           <div className="wrap">
             <SectionHeading title={t.listing.related} size="md" className="mb-10" />
-            <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
               {related.map((r) => (
                 <ListingCard key={r.id} listing={r} lang={lang} t={t} />
               ))}
@@ -246,6 +248,6 @@ export default async function ListingPage({ params }: PageProps<"/[lang]/listing
           </div>
         </section>
       ) : null}
-    </>
+    </PageTransition>
   );
 }

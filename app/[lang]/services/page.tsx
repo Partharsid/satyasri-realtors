@@ -7,6 +7,7 @@ import { WhatsAppIcon } from "@/components/icons";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import { AREAS, AREA_KEYS, SITE, SITE_URL, whatsappLink } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
+import PageTransition from "@/components/motion/PageTransition";
 
 const SERVICE_KEYS = ["buy", "sell", "rent", "lease", "invest"] as const;
 const SERVICE_IMAGES: Record<(typeof SERVICE_KEYS)[number], string> = {
@@ -46,7 +47,7 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
   };
 
   return (
-    <>
+    <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(servicesLd)} />
       <PhotoHero image="/media/photos/service-consult.jpg" label={t.services.label} title={t.services.heading}>
         <p>{t.services.intro}</p>
@@ -58,9 +59,9 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
             const s = t.services.items[k];
             const flip = i % 2 === 1;
             return (
-              <article key={k} id={k} className="grid scroll-mt-28 gap-3 md:grid-cols-2">
+              <article key={k} id={k} className="grid scroll-mt-28 gap-3 md:grid-cols-2" data-reveal="stagger">
                 <div className={`relative min-h-[260px] overflow-hidden rounded-card bg-mist md:min-h-[380px] ${flip ? "md:order-2" : ""}`}>
-                  <Image src={SERVICE_IMAGES[k]} alt="" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" />
+                  <Image src={SERVICE_IMAGES[k]} alt="" fill sizes="(min-width:768px) 50vw, 100vw" className="parallax object-cover" />
                 </div>
                 <div className="flex flex-col justify-between rounded-card bg-mist-soft p-6 md:p-10">
                   <div>
@@ -110,6 +111,6 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
           </div>
         </div>
       </section>
-    </>
+    </PageTransition>
   );
 }

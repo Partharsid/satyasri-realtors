@@ -8,6 +8,7 @@ import { fill, getDictionary, href, isLocale } from "@/lib/i18n";
 import { getReviews, getSettings } from "@/lib/data";
 import { AREAS, AREA_KEYS, SITE, SITE_URL } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
+import PageTransition from "@/components/motion/PageTransition";
 
 export const revalidate = 600;
 
@@ -34,7 +35,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
   };
 
   return (
-    <>
+    <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(founderLd)} />
       <PhotoHero image="/media/photos/city-lake-buddha.jpg" label={t.about.label} title={t.about.heading} tall>
         <p>{t.about.intro}</p>
@@ -47,14 +48,14 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
             <SectionHeading label={t.about.storyLabel} title={t.about.storyHeading} size="md" />
           </div>
           <div className="md:col-span-7">
-            <p className="lede text-[19px] text-[#1a1a1a]">{t.about.story}</p>
+            <p className="lede text-[19px] text-[#1a1a1a]" data-reveal="up">{t.about.story}</p>
           </div>
         </div>
       </section>
 
       {/* Founder */}
       <section className="pb-20 md:pb-28">
-        <div className="wrap grid gap-3 md:grid-cols-2">
+        <div className="wrap grid gap-3 md:grid-cols-2" data-reveal="stagger">
           <div className="relative min-h-[440px] overflow-hidden rounded-card bg-char">
             {settings.founder_photo ? (
               <Image src={settings.founder_photo} alt={SITE.founder} fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" />
@@ -89,7 +90,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
 
       {/* Mission / vision / values */}
       <section className="relative isolate overflow-hidden bg-tide text-paper section-gap">
-        <div className="wrap grid gap-12 md:grid-cols-2">
+        <div className="wrap grid gap-12 md:grid-cols-2" data-reveal="stagger">
           <div>
             <span className="label mb-3 !text-mist/75">{t.about.missionLabel}</span>
             <p className="text-[24px] font-light leading-snug md:text-[30px]">{t.about.mission}</p>
@@ -101,7 +102,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
         </div>
         <div className="wrap mt-16">
           <span className="label mb-4 !text-mist/75">{t.about.valuesLabel}</span>
-          <ol className="grid gap-x-8 md:grid-cols-3">
+          <ol className="grid gap-x-8 md:grid-cols-3" data-reveal="stagger">
             {t.about.values.map((v, i) => (
               <li key={v.title} className="border-t border-paper/20 py-6">
                 <span className="text-[12px] text-mist/70 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
@@ -118,7 +119,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
         <div className="wrap grid gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
             <span className="label mb-4">{t.about.areasLabel}</span>
-            <ul className="flex flex-wrap gap-2">
+            <ul className="flex flex-wrap gap-2" data-reveal="stagger">
               {AREA_KEYS.map((k) => (
                 <li key={k}>
                   <Link href={href(lang, `/locations/${k}`)} className="pill !px-5 !py-2.5 !text-[15px] !font-normal transition-colors hover:!bg-char hover:!text-paper">
@@ -150,7 +151,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                 <GoogleIcon size={18} /> {settings.google_rating || "5.0"} · {fill(t.common.reviews, { n: settings.google_review_count || "24" })}
               </span>
             </div>
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-3" data-reveal="stagger">
               {reviews.slice(0, 3).map((r) => (
                 <ReviewCard key={r.id} review={r} />
               ))}
@@ -161,6 +162,6 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
           </div>
         </section>
       ) : null}
-    </>
+    </PageTransition>
   );
 }
