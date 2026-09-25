@@ -45,6 +45,16 @@ async function refreshAdminSession(req: NextRequest) {
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // One canonical host: www.satyasri.com → satyasri.com
+  const host = req.headers.get("host") ?? "";
+  if (host.startsWith("www.")) {
+    const url = new URL(req.url);
+    url.protocol = "https:";
+    url.host = host.slice(4);
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
+
   if (pathname === "/admin" || pathname.startsWith("/admin/")) return refreshAdminSession(req);
 
   const first = pathname.split("/")[1];
