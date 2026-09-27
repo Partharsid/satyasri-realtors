@@ -7,21 +7,21 @@ import Header, { type MenuItem } from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingActions from "@/components/FloatingActions";
 import MotionRuntime from "@/components/motion/MotionRuntime";
-import { getDictionary, href, isLocale, LOCALES, LOCALE_LABELS } from "@/lib/i18n";
+import { getDictionary, href, isLocale, LOCALE_LABELS } from "@/lib/i18n";
 import { getSettings } from "@/lib/data";
 import { SITE, SITE_URL } from "@/lib/site";
 import { alternates } from "@/lib/seo";
+
+// Pages render per request; Supabase reads stay cached in the data cache
+// (tagged, refreshed on admin saves). Avoids stale full-route ISR entries.
+export const dynamic = "force-dynamic";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-montserrat", display: "swap" });
 const lora = Lora({ subsets: ["latin"], weight: ["400"], variable: "--font-lora", display: "swap" });
 const notoTelugu = Noto_Sans_Telugu({ subsets: ["telugu"], weight: ["300", "400", "500", "600"], variable: "--font-noto-telugu", display: "swap", preload: false });
 const notoDevanagari = Noto_Sans_Devanagari({ subsets: ["devanagari"], weight: ["300", "400", "500", "600"], variable: "--font-noto-devanagari", display: "swap", preload: false });
 
-export function generateStaticParams() {
-  return LOCALES.map((lang) => ({ lang }));
-}
 
-export const dynamicParams = false;
 
 export const viewport: Viewport = {
   themeColor: "#1c1c1c",

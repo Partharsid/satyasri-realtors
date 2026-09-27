@@ -5,18 +5,13 @@ import { ArrowRight, Phone } from "lucide-react";
 import ListingCard from "@/components/ListingCard";
 import { ArrowLink, PhotoHero, SectionHeading } from "@/components/ui";
 import { WhatsAppIcon } from "@/components/icons";
-import { fill, getDictionary, href, isLocale, LOCALES } from "@/lib/i18n";
+import { fill, getDictionary, href, isLocale } from "@/lib/i18n";
 import { getListings } from "@/lib/data";
 import { AREAS, AREA_KEYS, isAreaKey, mapEmbed, SITE, SITE_URL, whatsappLink } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
-export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return LOCALES.flatMap((lang) => AREA_KEYS.map((area) => ({ lang, area })));
-}
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/locations/[area]">) {
   const { lang, area } = await params;

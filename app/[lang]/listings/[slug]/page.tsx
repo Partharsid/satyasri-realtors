@@ -8,19 +8,14 @@ import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
 import { PhotoHero, SectionHeading } from "@/components/ui";
 import { WhatsAppIcon } from "@/components/icons";
-import { fill, getDictionary, href, isLocale, LOCALES } from "@/lib/i18n";
+import { fill, getDictionary, href, isLocale } from "@/lib/i18n";
 import { getListing, getListings } from "@/lib/data";
 import { formatPrice, isRepresentative } from "@/lib/format";
 import { AREAS, AREA_KEYS, isAreaKey, mapEmbed, SITE, SITE_URL, whatsappLink } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
 
-export async function generateStaticParams() {
-  const listings = await getListings();
-  return LOCALES.flatMap((lang) => listings.map((l) => ({ lang, slug: l.slug })));
-}
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/listings/[slug]">) {
   const { lang, slug } = await params;

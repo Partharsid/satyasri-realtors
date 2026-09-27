@@ -15,7 +15,6 @@ import { getListings, getPosts, getReviews, getSettings } from "@/lib/data";
 import { AREAS, AREA_KEYS, SITE } from "@/lib/site";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
 
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;

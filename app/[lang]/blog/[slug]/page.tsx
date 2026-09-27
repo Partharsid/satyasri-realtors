@@ -5,19 +5,14 @@ import { ArrowLeft, Phone } from "lucide-react";
 import { PostCard } from "@/components/PostCard";
 import { PhotoHero, SectionHeading } from "@/components/ui";
 import { WhatsAppIcon } from "@/components/icons";
-import { fill, getDictionary, href, isLocale, LOCALES } from "@/lib/i18n";
+import { fill, getDictionary, href, isLocale } from "@/lib/i18n";
 import { getPost, getPosts } from "@/lib/data";
 import { readingMinutes } from "@/lib/format";
 import { SITE, SITE_URL } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
 
-export async function generateStaticParams() {
-  const posts = await getPosts();
-  return LOCALES.flatMap((lang) => posts.map((p) => ({ lang, slug: p.slug })));
-}
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/blog/[slug]">) {
   const { lang, slug } = await params;

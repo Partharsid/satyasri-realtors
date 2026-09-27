@@ -10,7 +10,6 @@ import { AREAS, AREA_KEYS, SITE } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
 
 const REQUIREMENTS = ["buy", "rent", "sell", "rentOut", "lease", "invest"];
 

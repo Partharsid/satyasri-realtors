@@ -6,7 +6,6 @@ import { getPosts } from "@/lib/data";
 import { pageMeta } from "@/lib/seo";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/blog">) {
   const { lang } = await params;

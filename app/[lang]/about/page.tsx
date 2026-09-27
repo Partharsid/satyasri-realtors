@@ -10,7 +10,6 @@ import { AREAS, AREA_KEYS, SITE, SITE_URL } from "@/lib/site";
 import { jsonLd, pageMeta } from "@/lib/seo";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/about">) {
   const { lang } = await params;

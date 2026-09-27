@@ -7,7 +7,6 @@ import { getListings } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 import PageTransition from "@/components/motion/PageTransition";
 
-export const revalidate = 600;
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/saved">) {
   const { lang } = await params;
