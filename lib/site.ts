@@ -39,6 +39,7 @@ export const SITE = {
   social: {
     facebook: "https://www.facebook.com/SatyasriRealtors/",
     instagram: "https://www.instagram.com/satyasrirealtors",
+    whatsappChannel: "https://whatsapp.com/channel/0029VbCbfFNGOj9tlqUqsh1o",
   },
 } as const;
 

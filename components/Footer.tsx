@@ -75,9 +75,9 @@ export default function Footer({ lang, t, settings }: { lang: Locale; t: Diction
                 {t.cta.getDirections} <ArrowUpRight size={15} strokeWidth={1.5} aria-hidden />
               </a>
             </div>
-            <div className="mt-6 flex gap-2">
+            <div className="mt-6 flex gap-3">
               {[
-                { href: SITE.whatsapp, label: "WhatsApp", Icon: WhatsAppIcon },
+                { href: SITE.social.whatsappChannel, label: "WhatsApp Channel", Icon: WhatsAppIcon },
                 { href: SITE.social.instagram, label: "Instagram", Icon: InstagramIcon },
                 { href: SITE.social.facebook, label: "Facebook", Icon: FacebookIcon },
               ].map(({ href: h, label, Icon }) => (
@@ -87,9 +87,9 @@ export default function Footer({ lang, t, settings }: { lang: Locale; t: Diction
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="grid size-11 place-items-center rounded-full border border-iron text-paper transition-colors hover:border-brand hover:text-brand"
+                  className="grid size-12 place-items-center rounded-full border border-iron text-paper transition-colors hover:border-brand hover:text-brand"
                 >
-                  <Icon size={18} />
+                  <Icon size={24} />
                 </a>
               ))}
             </div>
