@@ -10,7 +10,7 @@ const en = {
     home: "Home",
     homeDesc: "Start here",
     listings: "Properties",
-    listingsDesc: "Flats, villas, land and commercial",
+    listingsDesc: "Flats, villas and land",
     areas: "Neighbourhoods",
     areasDesc: "Where we work across West Hyderabad",
     services: "Services",
@@ -112,7 +112,7 @@ const en = {
       },
       lease: {
         title: "Leasing",
-        body: "Commercial and residential leasing with clear terms — lock-in, escalation, maintenance responsibilities — so both sides know exactly where they stand.",
+        body: "Residential leasing with clear terms — lock-in, escalation, maintenance responsibilities — so both sides know exactly where they stand.",
       },
       invest: {
         title: "Investment consultation",
@@ -135,9 +135,9 @@ const en = {
     metaDescription:
       "SatyaSri Realtors is a registered real estate consultancy in Kondapur, Hyderabad, founded by Mahesh Kumar in 2009 and rated 5.0 on Google.",
     label: "About us",
-    heading: "A Kondapur consultancy built on trust since 2009.",
+    heading: "A Hitech City consultancy built on trust since 2009.",
     intro:
-      "SatyaSri Realtors is a trusted real estate agency in Hyderabad specialising in residential and commercial properties. We help clients buy, sell, rent, lease and invest in apartments, villas, plots and commercial spaces across West Hyderabad — with genuine listings, transparent transactions and personalised service.",
+      "SatyaSri Realtors is a trusted real estate agency in Hyderabad specialising in residential properties. We help clients buy, sell, rent, lease and invest in apartments, villas and plots across West Hyderabad — with genuine listings, transparent transactions and personalised service.",
     storyLabel: "Our story",
     storyHeading: "Started in 2009. Still personal.",
     story:
@@ -161,12 +161,12 @@ const en = {
     areasLabel: "Areas we serve",
     areasNote: "and nearby areas across West Hyderabad.",
     propertyTypesLabel: "Property types",
-    propertyTypes: ["Apartments", "Villas", "Plots & land", "Commercial spaces"],
+    propertyTypes: ["Apartments", "Villas", "Plots & land"],
   },
   listings: {
     metaTitle: "Properties for Sale & Rent in West Hyderabad",
     metaDescription:
-      "Verified apartments, villas, land and commercial properties for sale and rent in Hitech City, Gachibowli, Kondapur, Financial District, Kokapet and Manikonda.",
+      "Verified apartments, villas and land for sale and rent in Hitech City, Gachibowli, Kondapur, Financial District, Kokapet and Manikonda.",
     label: "Properties",
     heading: "Available properties",
     count: "{n} properties",
@@ -185,7 +185,7 @@ const en = {
     apply: "Show properties",
     empty: "No properties match these filters right now.",
     emptyHint: "New properties come in every week — share your requirement and we'll send matches on WhatsApp.",
-    types: { Apartment: "Apartment", Villa: "Villa", Land: "Land / Plot", Commercial: "Commercial" } as Record<string, string>,
+    types: { Apartment: "Apartment", Villa: "Villa", Land: "Land / Plot" } as Record<string, string>,
     transaction: { Sale: "For sale", Rent: "For rent", Lease: "For lease" } as Record<string, string>,
     status: { available: "Available", sold: "Sold", rented: "Rented" } as Record<string, string>,
     perMonth: "/month",
@@ -238,7 +238,7 @@ const en = {
     noProperties: "No listings in {area} right now — but we have access to many more options that aren't online. Tell us what you're looking for.",
     mapHeading: "{area} on the map",
     metaTitle: "Property in {area}, Hyderabad — Buy, Sell & Rent",
-    metaDescription: "Flats, villas and commercial properties for sale and rent in {area}, Hyderabad. Local guidance from SatyaSri Realtors, Kondapur, since 2009.",
+    metaDescription: "Flats, villas and plots for sale and rent in {area}, Hyderabad. Local guidance from SatyaSri Realtors, Kondapur, since 2009.",
     ctaHeading: "Looking in {area}?",
     items: {
       "hitech-city": {

@@ -218,7 +218,7 @@ function ListingEditor({ initial, onDone }: { initial: ListingInput; onDone: (ms
           </Field>
           <Field label="Property type">
             <select className="field" value={v.type} onChange={(e) => set("type", e.target.value as ListingInput["type"])}>
-              <option>Apartment</option><option>Villa</option><option>Land</option><option>Commercial</option>
+              <option>Apartment</option><option>Villa</option><option>Land</option>
             </select>
           </Field>
           <Field label="Price (₹, number only)" hint="e.g. 52000 or 12500000 — used for filters and display">
