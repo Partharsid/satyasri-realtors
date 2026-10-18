@@ -61,7 +61,10 @@ export default function MotionRuntime() {
           if (el.hasAttribute("data-count")) countUp(el);
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+      // threshold 0, not a fraction: a fraction of a tall element (the 12-card listings grid is ~6000px in one
+      // column on a phone) can be taller than the screen, and then it never reveals. The negative bottom margin
+      // still waits until the element is a little way onto the screen.
+      { rootMargin: "0px 0px -8% 0px", threshold: 0 },
     );
 
     const seen = new WeakSet<Element>();
