@@ -6,8 +6,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
+# Dev dependencies stay: `next start` needs typescript for next.config.ts, or it installs it on every start.
 # Build-time settings arrive as a BuildKit secret, so they never end up in an image layer.
-RUN --mount=type=secret,id=dotenv,target=/app/.env.production npm run build && npm prune --omit=dev
+RUN --mount=type=secret,id=dotenv,target=/app/.env.production npm run build
 
 FROM node:22-slim
 WORKDIR /app
