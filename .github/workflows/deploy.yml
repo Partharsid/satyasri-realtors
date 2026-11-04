@@ -65,8 +65,7 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.GITOPS_DEPLOY_KEY }}
         run: |
-          mkdir -p ~/.ssh && printf '%s
-' "$DEPLOY_KEY" > ~/.ssh/gitops && chmod 600 ~/.ssh/gitops
+          mkdir -p ~/.ssh && printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/gitops && chmod 600 ~/.ssh/gitops
           ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
           ssh-keyscan -p 443 ssh.github.com >> ~/.ssh/known_hosts 2>/dev/null
           # GitHub's git-over-SSH has short outages ("Permission denied (publickey)" / "Internal Server
