@@ -29,6 +29,7 @@ jobs:
   deploy:
     # Public repos get a native arm64 runner for free; private repos build arm64 under emulation.
     runs-on: ${{ github.event.repository.private && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -64,31 +65,37 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.GITOPS_DEPLOY_KEY }}
         run: |
-          mkdir -p ~/.ssh && printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/gitops && chmod 600 ~/.ssh/gitops
+          mkdir -p ~/.ssh && printf '%s
+' "$DEPLOY_KEY" > ~/.ssh/gitops && chmod 600 ~/.ssh/gitops
           ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
-          export GIT_SSH_COMMAND="ssh -i ~/.ssh/gitops -o IdentitiesOnly=yes -o ConnectTimeout=20"
-          # GitHub SSH occasionally refuses a connection (2026-11-04: "Permission denied (publickey)"
-          # with a valid key) — retry with backoff instead of failing the whole deploy.
-          for attempt in 1 2 3 4 5; do
+          ssh-keyscan -p 443 ssh.github.com >> ~/.ssh/known_hosts 2>/dev/null
+          # GitHub's git-over-SSH has short outages ("Permission denied (publickey)" / "Internal Server
+          # Error" with a valid key: 2026-11-03 and 2026-11-04). Ride them out instead of failing:
+          # alternate between port 22 and ssh.github.com:443 and keep retrying for ~25 minutes.
+          ssh22="ssh -i ~/.ssh/gitops -o IdentitiesOnly=yes -o ConnectTimeout=20"
+          ssh443="ssh -i ~/.ssh/gitops -o IdentitiesOnly=yes -o ConnectTimeout=20 -o Hostname=ssh.github.com -o Port=443"
+          pick_ssh() { if [ $(( $1 % 2 )) = 1 ]; then export GIT_SSH_COMMAND="$ssh22"; else export GIT_SSH_COMMAND="$ssh443"; fi; }
+          wait_for() { local s=$(( $1 * 15 )); [ $s -gt 120 ] && s=120; echo "$2 failed (attempt $1), retrying in $s s"; sleep $s; }
+          MAX=20
+          for attempt in $(seq 1 $MAX); do
+            pick_ssh $attempt
             git clone -q --depth 1 git@github.com:Partharsid/k3s-gitops.git gitops && break
             rm -rf gitops
-            [ "$attempt" = 5 ] && { echo "::error::could not clone k3s-gitops after 5 attempts"; exit 1; }
-            echo "clone failed (attempt $attempt), retrying in $((attempt * 10)) s"; sleep $((attempt * 10))
+            [ "$attempt" = $MAX ] && { echo "::error::could not clone k3s-gitops after $MAX attempts"; exit 1; }
+            wait_for $attempt clone
           done
           cd gitops
           git config user.name "deploy-bot" && git config user.email "partharsid@users.noreply.github.com"
-          # several sites can deploy at once (and SSH can flake): retry push with backoff
-          for attempt in 1 2 3 4 5; do
+          for attempt in $(seq 1 $MAX); do
+            pick_ssh $attempt
             sed -i "/- name: sites\/${APP}\$/{n;s#newName: .*#newName: ${IMAGE}#;n;s#newTag: .*#newTag: ${GITHUB_SHA}#}" apps/sites/kustomization.yaml
             git diff --quiet || git commit -qam "deploy ${APP} ${GITHUB_SHA::7}"
             # Success only when origin already has this tag: nothing local is waiting to be pushed.
-            # (A failed push leaves the commit here, so the next attempt pushes it again instead of
-            # finding "nothing to commit" and reporting a deploy that never happened.)
             if [ -z "$(git log --oneline origin/main..HEAD)" ]; then echo "k3s-gitops already points at ${GITHUB_SHA::7}"; exit 0; fi
             git push -q && exit 0
-            sleep $((attempt * 15))
+            wait_for $attempt push
             # another site may have pushed meanwhile: start over from origin, re-apply the bump
             git fetch -q origin main && git reset -q --hard origin/main || true
           done
-          echo "::error::could not push to k3s-gitops after 5 attempts"
+          echo "::error::could not push to k3s-gitops after $MAX attempts"
           exit 1
