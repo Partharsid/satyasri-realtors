@@ -5,6 +5,12 @@ name: deploy
 on:
   push:
     branches: [master]
+    # pushes that only touch these never change the running app, so don't rebuild for them
+    paths-ignore:
+      - '**.md'
+      - 'scripts/**'
+      - 'docs/**'
+      - '.vscode/**'
   workflow_dispatch:
 
 permissions:
@@ -60,14 +66,24 @@ jobs:
         run: |
           mkdir -p ~/.ssh && printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/gitops && chmod 600 ~/.ssh/gitops
           ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
-          export GIT_SSH_COMMAND="ssh -i ~/.ssh/gitops"
-          git clone -q --depth 1 git@github.com:Partharsid/k3s-gitops.git gitops && cd gitops
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/gitops -o IdentitiesOnly=yes -o ConnectTimeout=20"
+          # GitHub SSH occasionally refuses a connection (2026-11-04: "Permission denied (publickey)"
+          # with a valid key) — retry with backoff instead of failing the whole deploy.
+          for attempt in 1 2 3 4 5; do
+            git clone -q --depth 1 git@github.com:Partharsid/k3s-gitops.git gitops && break
+            rm -rf gitops
+            [ "$attempt" = 5 ] && { echo "::error::could not clone k3s-gitops after 5 attempts"; exit 1; }
+            echo "clone failed (attempt $attempt), retrying in $((attempt * 10)) s"; sleep $((attempt * 10))
+          done
+          cd gitops
           git config user.name "deploy-bot" && git config user.email "partharsid@users.noreply.github.com"
-          # several sites can deploy at once: rebase-free retry on push conflicts
+          # several sites can deploy at once (and SSH can flake): retry push with backoff
           for attempt in 1 2 3 4 5; do
             sed -i "/- name: sites\/${APP}\$/{n;s#newName: .*#newName: ${IMAGE}#;n;s#newTag: .*#newTag: ${GITHUB_SHA}#}" apps/sites/kustomization.yaml
             git commit -qam "deploy ${APP} ${GITHUB_SHA::7}" || exit 0
             git push -q && exit 0
-            git fetch -q origin main && git reset -q --hard origin/main
+            sleep $((attempt * 5))
+            git fetch -q origin main && git reset -q --hard origin/main || true
           done
+          echo "::error::could not push to k3s-gitops after 5 attempts"
           exit 1
