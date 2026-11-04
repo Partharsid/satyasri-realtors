@@ -82,18 +82,27 @@ async function saveToSupabase(l: Lead) {
 
 async function sendTelegram(l: Lead) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chat = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chat) throw new Error("telegram: not configured");
+  // TELEGRAM_CHAT_ID may hold several comma-separated chat IDs; every one gets the lead.
+  const chats = (process.env.TELEGRAM_CHAT_ID || "").split(",").map((c) => c.trim()).filter(Boolean);
+  if (!token || chats.length === 0) throw new Error("telegram: not configured");
   const body =
     `<b>🏠 New enquiry — ${esc(SITE.name)}</b>\n\n` +
     rows(l).map(([k, v]) => `<b>${k}:</b> ${esc(v)}`).join("\n") +
     `\n\n<a href="https://wa.me/91${l.phone}">WhatsApp ${esc(l.name)}</a> · <a href="tel:+91${l.phone}">Call</a>`;
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chat, text: body, parse_mode: "HTML", disable_web_page_preview: true }),
-  });
-  if (!res.ok) throw new Error(`telegram: ${res.status} ${await res.text()}`);
+  const results = await Promise.allSettled(
+    chats.map(async (chat) => {
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chat, text: body, parse_mode: "HTML", disable_web_page_preview: true }),
+      });
+      if (!res.ok) throw new Error(`${chat}: ${res.status} ${await res.text()}`);
+    }),
+  );
+  const failed = results.filter((r): r is PromiseRejectedResult => r.status === "rejected");
+  // Only fail the channel if no chat received the lead; partial failures are logged.
+  if (failed.length === chats.length) throw new Error(`telegram: ${failed.map((f) => f.reason).join("; ")}`);
+  for (const f of failed) console.error(`telegram (partial): ${f.reason}`);
 }
 
 async function appendToSheet(l: Lead) {
