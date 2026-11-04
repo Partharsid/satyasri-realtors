@@ -80,9 +80,14 @@ jobs:
           # several sites can deploy at once (and SSH can flake): retry push with backoff
           for attempt in 1 2 3 4 5; do
             sed -i "/- name: sites\/${APP}\$/{n;s#newName: .*#newName: ${IMAGE}#;n;s#newTag: .*#newTag: ${GITHUB_SHA}#}" apps/sites/kustomization.yaml
-            git commit -qam "deploy ${APP} ${GITHUB_SHA::7}" || exit 0
+            git diff --quiet || git commit -qam "deploy ${APP} ${GITHUB_SHA::7}"
+            # Success only when origin already has this tag: nothing local is waiting to be pushed.
+            # (A failed push leaves the commit here, so the next attempt pushes it again instead of
+            # finding "nothing to commit" and reporting a deploy that never happened.)
+            if [ -z "$(git log --oneline origin/main..HEAD)" ]; then echo "k3s-gitops already points at ${GITHUB_SHA::7}"; exit 0; fi
             git push -q && exit 0
-            sleep $((attempt * 5))
+            sleep $((attempt * 15))
+            # another site may have pushed meanwhile: start over from origin, re-apply the bump
             git fetch -q origin main && git reset -q --hard origin/main || true
           done
           echo "::error::could not push to k3s-gitops after 5 attempts"
