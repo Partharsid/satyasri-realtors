@@ -150,6 +150,13 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
             </Script>
           </>
         ) : null}
+        {/* Umami (self-hosted, cookieless visitor analytics) */}
+        <Script
+          src="https://analytics.partharsid.dev/script.js"
+          strategy="afterInteractive"
+          data-website-id="f2eb0b91-bb60-47f6-8a31-286cb7351bb6"
+          data-domains="satyasri.com,www.satyasri.com"
+        />
       </body>
     </html>
   );
