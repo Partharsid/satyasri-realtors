@@ -3,7 +3,8 @@ import { getListings, getPosts } from "@/lib/data";
 import { LOCALES, LOCALE_LABELS, type Locale } from "@/lib/i18n/config";
 import { AREA_KEYS, SITE_URL } from "@/lib/site";
 
-export const revalidate = 3600;
+// Built per request (data reads are cached): a build-time render has no database and would publish an empty sitemap.
+export const dynamic = "force-dynamic";
 
 // Real dates only: Google ignores <lastmod> from sites that stamp "now" on everything.
 // Bump this when the page templates/copy change meaningfully.
