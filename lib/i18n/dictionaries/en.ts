@@ -131,7 +131,7 @@ const en = {
     ctaHeading: "Tell us what you're planning.",
   },
   about: {
-    metaTitle: "About — SatyaSri Realtors, Kondapur, since 2009",
+    metaTitle: "About Us — Real Estate Consultants in Kondapur since 2009",
     metaDescription:
       "SatyaSri Realtors is a registered real estate consultancy in Kondapur, Hyderabad, founded by Mahesh Kumar in 2009 and rated 5.0 on Google.",
     label: "About us",
@@ -274,7 +274,7 @@ const en = {
     },
   },
   contact: {
-    metaTitle: "Contact SatyaSri Realtors — Kondapur, Hyderabad",
+    metaTitle: "Contact — Property Enquiries in Kondapur, Hyderabad",
     metaDescription: "Call or WhatsApp +91 90142 24408, or visit our office in Kondapur, Hyderabad. Open daily 9:30 am – 8:30 pm.",
     label: "Contact",
     heading: "Visit, call or WhatsApp.",

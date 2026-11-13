@@ -39,9 +39,20 @@ export default async function AreaPage({ params }: PageProps<"/[lang]/locations/
     containedInPlace: { "@type": "City", name: "Hyderabad" },
   };
 
+  const crumbsLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t.nav.home, item: `${SITE_URL}/${lang}` },
+      { "@type": "ListItem", position: 2, name: t.areas.label, item: `${SITE_URL}/${lang}/locations/${area}` },
+      { "@type": "ListItem", position: 3, name: info.name, item: `${SITE_URL}/${lang}/locations/${area}` },
+    ],
+  };
+
   return (
     <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(placeLd)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(crumbsLd)} />
       <PhotoHero image={info.image} label={`${t.areas.label} · Hyderabad`} title={info.name} tall />
 
       <section className="section-gap">

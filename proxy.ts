@@ -47,6 +47,16 @@ export async function proxy(req: NextRequest) {
 
   // One canonical host: www.satyasri.com → satyasri.com
   const host = req.headers.get("host") ?? "";
+
+  // Plain-HTTP visitors (and crawlers) go to HTTPS permanently; Cloudflare reports the visitor's scheme.
+  const visitor = req.headers.get("cf-visitor") ?? "";
+  if (/"scheme"\s*:\s*"http"/.test(visitor) && !/^(localhost|127\.)/.test(host)) {
+    const url = new URL(req.url);
+    url.protocol = "https:";
+    url.host = host.replace(/^www\./, "");
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
   if (host.startsWith("www.")) {
     const url = new URL(req.url);
     url.protocol = "https:";

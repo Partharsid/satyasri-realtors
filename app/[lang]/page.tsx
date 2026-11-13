@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { preload } from "react-dom";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Phone } from "lucide-react";
@@ -19,6 +20,7 @@ import PageTransition from "@/components/motion/PageTransition";
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
+  preload("/media/hero-poster.jpg", { as: "image", fetchPriority: "high" });
   const t = getDictionary(lang);
   const [listings, reviews, posts, settings] = await Promise.all([getListings(), getReviews(), getPosts(), getSettings()]);
 
@@ -58,7 +60,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                 <span key={i} style={{ ["--i" as string]: i }}>{ch}</span>
               ))}
             </span>
-            <span className="sr-only">SatyaSri Realtors — {t.meta.title}</span>
+            <span className="sr-only">{t.meta.title}</span>
           </h1>
           <div className="hero-in mt-8 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ ["--d" as string]: 1100 }}>
             <a href={SITE.phoneHref} className="btn bg-paper text-ink hover:bg-mist">

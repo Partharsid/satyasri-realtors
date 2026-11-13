@@ -18,9 +18,15 @@ export default function HeroVideo({ poster, className = "" }: { poster: string; 
       if (reduce.matches || saveData) video.pause();
       else video.play().catch(() => {});
     };
-    apply();
+    // Start the video only once the page has finished loading so it never competes with the poster (LCP).
+    const start = () => apply();
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
     reduce.addEventListener("change", apply);
-    return () => reduce.removeEventListener("change", apply);
+    return () => {
+      window.removeEventListener("load", start);
+      reduce.removeEventListener("change", apply);
+    };
   }, []);
 
   return (
@@ -31,7 +37,6 @@ export default function HeroVideo({ poster, className = "" }: { poster: string; 
       muted
       loop
       playsInline
-      autoPlay
       preload="metadata"
       aria-hidden
       tabIndex={-1}

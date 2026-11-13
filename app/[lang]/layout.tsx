@@ -51,6 +51,10 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
       images: [{ url: "/media/og.jpg", width: 1200, height: 630, alt: SITE.name }],
     },
     twitter: { card: "summary_large_image", title: t.meta.title, description: t.meta.description, images: ["/media/og.jpg"] },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+      other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } : undefined,
+    },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
     formatDetection: { telephone: true, address: true },
     other: { "geo.region": "IN-TG", "geo.placename": "Hyderabad", "geo.position": `${SITE.geo.lat};${SITE.geo.lng}` },
