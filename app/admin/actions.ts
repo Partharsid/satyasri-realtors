@@ -1,11 +1,13 @@
 "use server";
 
 import { updateTag } from "next/cache";
+import { after } from "next/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { TAGS } from "@/lib/supabase/clients";
 import { AREA_KEYS } from "@/lib/site";
 import { slugify } from "@/lib/slug";
+import { gbpEnabled, postListingToGoogle } from "@/lib/gbp";
 import { requireAdmin } from "./auth";
 
 export type Result = { ok: true; id?: string } | { ok: false; error: string };
@@ -78,6 +80,10 @@ export async function saveListing(input: ListingInput): Promise<Result> {
     const { data, error } = await q;
     if (error) throw new Error(error.code === "23505" ? "Another property already uses this URL slug." : error.message);
     updateTag(TAGS.listings);
+    // A brand-new, available listing is announced on the Google Business Profile (no-op until GBP_* is configured).
+    if (!id && v.status === "available" && gbpEnabled()) {
+      after(() => postListingToGoogle({ ...record, price: v.price ?? null, images: v.images }));
+    }
     return { ok: true, id: data.id };
   } catch (e) {
     return fail(e);
