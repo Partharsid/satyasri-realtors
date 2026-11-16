@@ -163,6 +163,9 @@ export default function Header({ lang, homeHref, items, labels, phoneHref, phone
                     lang={LOCALE_LABELS[l].htmlLang}
                     aria-current={l === lang ? "true" : undefined}
                     className={`pill !px-4 !py-2 !text-[13px] ${l === lang ? "!bg-paper !text-ink" : "!bg-transparent border border-iron !text-paper hover:border-smoke"}`}
+                    // Other languages' names use the device's own font: otherwise this one word makes every
+                    // page download that script's whole web font (~120 KB each for Telugu and Devanagari).
+                    style={l === lang ? undefined : { fontFamily: "system-ui, sans-serif" }}
                   >
                     {LOCALE_LABELS[l].name}
                   </Link>
