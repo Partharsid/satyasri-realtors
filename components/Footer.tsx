@@ -99,6 +99,7 @@ export default function Footer({ lang, t, settings }: { lang: Locale; t: Diction
         <div className="mt-16 flex flex-col gap-3 border-t border-iron pt-6 text-[12px] text-mist/60 md:flex-row md:justify-between">
           <p>© {year} {SITE.name}. {t.footer.rights}</p>
           <p>{SITE.legalCategory} · {t.common.since.replace("{year}", String(SITE.since))}</p>
+          <p>Site by <a href="https://partharsid.dev" className="underline underline-offset-2 hover:text-paper">Parth Arsid</a></p>
         </div>
       </div>
     </footer>
