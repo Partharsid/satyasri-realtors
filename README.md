@@ -89,3 +89,7 @@ Environment variables are set in Coolify (see `.env.example`). `NEXT_PUBLIC_*` v
 ## Media credits
 
 Hero video: Pexels #15612409 (Financial District, Hyderabad). Photography: Unsplash. Both are free for commercial use. Listing photos are marked "representative" until the owner's photos are uploaded.
+
+---
+
+Built by [Parth Arsid](https://partharsid.dev), edge AI and full-stack engineer.
