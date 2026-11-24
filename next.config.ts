@@ -26,8 +26,19 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    // Old public paths from the previous site.
-    return [{ source: "/audit.pdf", destination: "/en", permanent: true }];
+    // Old public paths from the previous site: one permanent hop to the closest page (Search Console showed
+    // these as 404/403 or multi-hop redirect chains, wasting whatever Google had learned about them).
+    const to = (destination: string, ...sources: string[]) => sources.map((source) => ({ source, destination, permanent: true as const }));
+    return [
+      ...to("/en", "/audit.pdf", "/sign-in", "/cart", "/login", "/register"),
+      ...to("/en/about", "/about", "/testimonial", "/our-partner"),
+      ...to("/en/services", "/how-it-work", "/how-it-works", "/service", "/services-list"),
+      ...to("/en/listings", "/all-locations", "/search-home", "/gallery", "/case", "/case/:path*", "/properties", "/property/:path*"),
+      ...to("/en/blog", "/news", "/blog-list"),
+      ...to("/en/locations/kondapur", "/gated-community-plots-in-kondapur-a-perfect-blend-of-luxury-and-safety"),
+      ...to("/en/privacy", "/privacy", "/privacy-policy"),
+      ...to("/en/contact", "/contact-us"),
+    ];
   },
 };
 
